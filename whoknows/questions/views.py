@@ -1,5 +1,10 @@
 from django.shortcuts import render
-from django.views.generic import View
+from django.views.generic import View, TemplateView
+
+
+class HomePage(TemplateView):
+
+    template_name = 'questions/index.html'
 
 
 class Ask(View):
