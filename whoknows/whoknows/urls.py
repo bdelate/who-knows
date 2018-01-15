@@ -21,5 +21,6 @@ ADMIN_URL = os.environ['whoknows_admin_url']
 
 urlpatterns = [
     path('', include('questions.urls', namespace='questions')),
+    path('account/', include('account.urls', namespace='account')),
     path(ADMIN_URL, admin.site.urls),
 ]
