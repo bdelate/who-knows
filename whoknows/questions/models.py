@@ -1,12 +1,23 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
+from django.utils.text import slugify
 
 
 class Question(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=256, unique=True)
+    slug = models.SlugField(max_length=256)
     content = models.TextField()
     votes = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        print(reverse('questions:detail', args=[self.slug]))
+        return reverse('questions:detail', args=[self.slug])

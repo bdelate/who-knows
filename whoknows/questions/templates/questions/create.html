@@ -1,0 +1,9 @@
+{% extends parent_template|default:"base.html" %}
+{% block body %}
+  <h2>Ask a questoin</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Ask Question</button>
+  </form>
+{% endblock body %}

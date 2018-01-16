@@ -1,5 +1,7 @@
-from django.shortcuts import render
-from django.views.generic import View, TemplateView
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import CreateView, DetailView, TemplateView
+from .models import Question
 
 
 class HomePage(TemplateView):
@@ -7,9 +9,23 @@ class HomePage(TemplateView):
     template_name = 'questions/index.html'
 
 
-class Ask(View):
+class QuestionCreate(LoginRequiredMixin, CreateView):
 
-    def get(self, request):
-        return render(request,
-                      'questions/ask.html',
-                      {})
+    model = Question
+    template_name = 'questions/create.html'
+    fields = ['title', 'content']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class QuestionDetail(DetailView):
+
+    model = Question
+    template_name = 'questions/detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = get_object_or_404(Question, slug=kwargs['slug'])
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
