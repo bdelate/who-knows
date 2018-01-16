@@ -1,5 +1,9 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
-  <h2>Profile</h2>
-  <span>{{ profile.about }}</span>
+  <h2>Profile - Update</h2>
+  <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Update</button>
+  </form>
 {% endblock body %}

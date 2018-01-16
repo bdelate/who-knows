@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import View, DetailView
+from django.views.generic import View, UpdateView
 from django.contrib.auth import login, authenticate, get_user
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile
 
 
-class Create(View):
+class AccountCreate(View):
 
     def get(self, request):
         form = UserCreationForm()
@@ -21,14 +21,16 @@ class Create(View):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect(reverse('questions:ask'))
+            return redirect(reverse('account:profile'))
         return render(request, 'account/create.html', {'form': form})
 
 
-class ProfileDetail(LoginRequiredMixin, DetailView):
+class ProfileUpdate(LoginRequiredMixin, UpdateView):
 
     model = Profile
     template_name = 'account/profile.html'
+    fields = ['about']
+    success_url = '/account/'
 
     def get_object(self, queryset=None):
         current_user = get_user(self.request)

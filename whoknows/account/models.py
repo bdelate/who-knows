@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
+from django.urls import reverse
 from django.db.models.signals import post_save
 
 
@@ -10,6 +11,9 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.get_username()
+
+    def get_absolute_url(self):
+        return reverse('account:profile')
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

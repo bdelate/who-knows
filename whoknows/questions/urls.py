@@ -4,6 +4,6 @@ from .views import HomePage, Ask
 app_name = 'questions'
 
 urlpatterns = [
-    path('', HomePage.as_view()),
+    path('', HomePage.as_view(), name='home'),
     path('ask/', Ask.as_view(), name='ask'),
 ]
