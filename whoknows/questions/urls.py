@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import HomePage, Ask
+from .views import HomePage, QuestionCreate, QuestionDetail
 
 app_name = 'questions'
 
 urlpatterns = [
     path('', HomePage.as_view(), name='home'),
-    path('ask/', Ask.as_view(), name='ask'),
+    path('question/', QuestionCreate.as_view(), name='create'),
+    path('question/<str:slug>/', QuestionDetail.as_view(), name='detail'),
 ]

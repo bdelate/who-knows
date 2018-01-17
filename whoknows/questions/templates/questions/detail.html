@@ -1,4 +1,6 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
-    <span>test</span>
+  <h2>Question - Detail</h2>
+  {{ object.title }}<br />
+  {{ object.content }}
 {% endblock body %}

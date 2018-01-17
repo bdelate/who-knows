@@ -17,6 +17,7 @@ class QuestionTest(TransactionTestCase):
         self.assertEqual(question.user, self.user)
         self.assertEqual(question.title, 'test title')
         self.assertEqual(question.content, 'test content')
+        self.assertEqual(question.slug, 'test-title')
 
     def test_question_must_have_user(self):
         invalid_question = Question(title='test title', content='test content')
@@ -33,3 +34,8 @@ class QuestionTest(TransactionTestCase):
         Question.objects.create(user=self.user, title='test title', content='test content')
         with self.assertRaises(IntegrityError):
             Question.objects.create(user=self.user, title='test title', content='test content')
+
+    def test_get_absolute_url(self):
+        Question.objects.create(user=self.user, title='test title', content='test content')
+        question = Question.objects.first()
+        self.assertEqual(question.get_absolute_url(), '/question/test-title/')
