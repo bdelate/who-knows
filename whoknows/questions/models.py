@@ -19,5 +19,4 @@ class Question(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        print(reverse('questions:detail', args=[self.slug]))
         return reverse('questions:detail', args=[self.slug])
