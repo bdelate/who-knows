@@ -1,12 +1,15 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, DetailView, TemplateView
+from django.views.generic import CreateView, DetailView, ListView
 from .models import Question
 
 
-class HomePage(TemplateView):
+class HomePage(ListView):
 
+    model = Question
+    queryset = Question.objects.order_by('-created_at')[:30]
     template_name = 'questions/index.html'
+    paginate_by = 3
 
 
 class QuestionCreate(LoginRequiredMixin, CreateView):

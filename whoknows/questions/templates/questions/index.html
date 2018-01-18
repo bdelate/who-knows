@@ -1,4 +1,32 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
-  <h2>Home Page</h2>
+    <h2>Home Page</h2>
+    <ul>
+        {% for question in object_list %}
+            <li><a href="{{ question.get_absolute_url }}">{{ question.title }}</a> : {{ question.created_at }}</li>
+        {% empty %}
+            <li>No Questions yet. Ask a question <a href="{% url 'questions:create' %}">here</a></li>
+        {% endfor %}
+    </ul>
+    {% if is_paginated %}
+        <ul>
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li><span>{{ i }} <span>(current)</span></span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    {% endif %}
 {% endblock body %}
