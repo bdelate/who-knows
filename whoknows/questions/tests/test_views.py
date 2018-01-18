@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib import auth
+from questions.models import Question
 
 
 class QuestionCreateAndDetailTest(TestCase):
@@ -43,3 +44,22 @@ class QuestionCreateAndDetailTest(TestCase):
         self.client.post(reverse('questions:create'), data={'title': 'test title', 'content': 'test content'})
         response = self.client.post(reverse('questions:create'), data={'title': 'test title', 'content': 'test content'})
         self.assertContains(response, 'Question with this Title already exists.')
+
+
+class QuestionHomePageTest(TestCase):
+
+    def setUp(self):
+        User = get_user_model()
+        self.credentials = {'username': 'john', 'password': 'p@ssw0rd'}
+        self.user = User.objects.create_user(**self.credentials)
+
+    def test_no_questions(self):
+        response = self.client.get(reverse('questions:home'))
+        self.assertContains(response, 'No Questions yet. Ask a question')
+
+    def test_question_list(self):
+        Question.objects.create(user=self.user, title='test title1', content='test content1')
+        Question.objects.create(user=self.user, title='test title2', content='test content2')
+        response = self.client.get(reverse('questions:home'))
+        self.assertContains(response, 'test title1')
+        self.assertContains(response, 'test title2')
