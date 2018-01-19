@@ -2,5 +2,8 @@
 {% block body %}
   <h2>Question - Detail</h2>
   {{ object.title }}<br />
-  {{ object.content }}
+  {{ object.content }}<br />
+  {% for tag in object.tags.all %}
+    {{ tag.name }}<br />
+  {% endfor %}
 {% endblock body %}
