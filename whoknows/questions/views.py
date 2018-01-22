@@ -29,8 +29,8 @@ class QuestionCreate(LoginRequiredMixin, TemplateView):
             question_form.instance.user = self.request.user
             question = question_form.save()
             tags = tag_form.cleaned_data['tags']
-            for tag_id in tags:
-                obj, created = Tag.objects.get_or_create(id=tag_id)
+            for tag_slug in tags:
+                obj, created = Tag.objects.get_or_create(slug=tag_slug)
                 question.tags.add(obj)
             return redirect(question)
         return render(request,

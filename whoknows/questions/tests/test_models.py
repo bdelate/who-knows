@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.test import TransactionTestCase
-from questions.models import Question
+from django.test import TransactionTestCase, TestCase
+from questions.models import Question, Tag
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
 
@@ -39,3 +39,12 @@ class QuestionTest(TransactionTestCase):
         Question.objects.create(user=self.user, title='test title', content='test content')
         question = Question.objects.first()
         self.assertEqual(question.get_absolute_url(), '/question/test-title/')
+
+
+class TagTest(TestCase):
+
+    def test_save_and_retrieve(self):
+        Tag.objects.create(name='this is a tag')
+        tag = Tag.objects.first()
+        self.assertEqual(tag.name, 'this is a tag')
+        self.assertEqual(tag.slug, 'this-is-a-tag')

@@ -10,7 +10,7 @@ class BaseTestMixins:
     def login_and_create_question(self):
         self.client.post(reverse('account:login'), self.credentials)
         response = self.client.post(reverse('questions:create'),
-                                    data={'title': 'test title', 'content': 'test content', 'tags': self.tag1.id},
+                                    data={'title': 'test title', 'content': 'test content', 'tags': self.tag1.slug},
                                     follow=True)
         return response
 
@@ -59,7 +59,7 @@ class QuestionCreateAndDetailTest(TestCase, BaseTestMixins):
     def test_create_question_with_multiple_tags(self):
         self.client.post(reverse('account:login'), self.credentials)
         response = self.client.post(reverse('questions:create'),
-                                    data={'title': 'test title', 'content': 'test content', 'tags': [self.tag1.id, self.tag2.id]},
+                                    data={'title': 'test title', 'content': 'test content', 'tags': [self.tag1.slug, self.tag2.slug]},
                                     follow=True)
         self.assertContains(response, 'tag1')
         self.assertContains(response, 'tag2')
