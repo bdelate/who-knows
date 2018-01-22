@@ -48,3 +48,18 @@ class QuestionDetail(DetailView):
         self.object = get_object_or_404(Question, slug=kwargs['slug'])
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
+
+
+class TagsList(ListView):
+
+    model = Tag
+    template_name = 'questions/tags_list.html'
+
+
+class TaggedQuestionList(ListView):
+
+    template_name = 'questions/index.html'
+
+    def get_queryset(self):
+        tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
+        return Question.objects.filter(tags=tag)

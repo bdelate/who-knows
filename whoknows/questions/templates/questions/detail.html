@@ -3,6 +3,7 @@
   <h2>Question - Detail</h2>
   {{ object.title }}<br />
   {{ object.content }}<br />
+  <h3>Tags:</h3>
   {% for tag in object.tags.all %}
     {{ tag.name }}<br />
   {% endfor %}
