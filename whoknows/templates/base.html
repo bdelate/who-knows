@@ -8,6 +8,7 @@
         <header>
             <a href="{% url 'questions:home' %}">Questions</a>
             <a href="{% url 'questions:create' %}">Ask</a>
+            <a href="{% url 'questions:tags_list' %}">Tags</a>
             {% if user.is_authenticated %}
                 <a href="{% url 'account:profile' %}">Profile</a>
                 <a href="{% url 'account:logout' %}">Logout</a>

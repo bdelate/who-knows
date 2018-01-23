@@ -1,0 +1,11 @@
+{% extends parent_template|default:"base.html" %}
+{% block body %}
+    <h2>Tags</h2>
+    <ul>
+        {% for tag in object_list %}
+            <li><a href="{% url 'questions:tagged_questions' slug=tag.slug %}">{{ tag.name }}</a></li>
+        {% empty %}
+            <li>No tags created yet</li>
+        {% endfor %}
+    </ul>
+{% endblock body %}

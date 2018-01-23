@@ -3,7 +3,8 @@
   <h2>Ask a questoin</h2>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ question_form.as_p }}
+    {{ tag_form.as_p }}
     <button type="submit">Ask Question</button>
   </form>
 {% endblock body %}
