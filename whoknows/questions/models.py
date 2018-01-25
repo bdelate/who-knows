@@ -24,7 +24,7 @@ class Question(models.Model):
     title = models.CharField(max_length=256, unique=True)
     slug = models.SlugField(max_length=256)
     content = models.TextField()
-    votes = GenericRelation(Vote)
+    votes = GenericRelation(Vote, related_query_name='questions')
     created_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)
 
