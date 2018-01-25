@@ -21,7 +21,7 @@ class UpVote(View):
             if self.request.user.is_authenticated:
                 if object_instance.user != self.request.user:
                     try:
-                        object_instance.votes.create(user=self.request.user)
+                        object_instance.votes.create(voter=self.request.user)
                     except IntegrityError:
                         message = 'You have already voted for this {}'.format(vote_form.cleaned_data['vote_type'])
                         return JsonResponse({'response': message})

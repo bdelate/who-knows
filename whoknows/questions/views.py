@@ -55,7 +55,7 @@ class QuestionDetail(DetailView):
         kwargs['vote_form'] = VoteForm(initial={'object_id': kwargs['object'].id, 'vote_type': 'question'})
         kwargs['num_votes'] = kwargs['object'].votes.count()
         if self.request.user.is_authenticated:
-            kwargs['already_voted'] = kwargs['object'].votes.filter(user=self.request.user).count() == 1
+            kwargs['already_voted'] = kwargs['object'].votes.filter(voter=self.request.user).count() == 1
         return kwargs
 
 
