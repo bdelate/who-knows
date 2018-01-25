@@ -4,6 +4,7 @@
     <h2>Question - Detail</h2>
     {{ object.title }}<br />
     {{ object.content }}<br />
+    created by: {{ object.user }}
     <h3>Votes:</h3>
     Total votes: <span id="id_num_question_votes">{{ num_votes }}</span><br />
     {% if already_voted %}
