@@ -3,7 +3,7 @@
     <h2>Home Page</h2>
     <ul>
         {% for question in object_list %}
-            <li><a href="{{ question.get_absolute_url }}">{{ question.title }}</a> : {{ question.created_at }}</li>
+            <li><a href="{{ question.get_absolute_url }}">{{ question.title }}</a> : {{ question.created_at }} (Asked by: {{ question.user }})</li>
         {% empty %}
             <li>No Questions yet. Ask a question <a href="{% url 'questions:create' %}">here</a></li>
         {% endfor %}
