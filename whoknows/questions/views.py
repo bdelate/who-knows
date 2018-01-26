@@ -12,7 +12,7 @@ class HomePage(ListView):
     model = Question
     queryset = Question.objects.order_by('-created_at')[:30]
     template_name = 'questions/index.html'
-    paginate_by = 3
+    paginate_by = 5
 
 
 class QuestionCreate(LoginRequiredMixin, TemplateView):
@@ -68,7 +68,8 @@ class TagsList(ListView):
 class TaggedQuestionList(ListView):
 
     template_name = 'questions/index.html'
+    paginate_by = 5
 
     def get_queryset(self):
         tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
-        return Question.objects.filter(tags=tag)
+        return Question.objects.filter(tags=tag).order_by('-created_at')
