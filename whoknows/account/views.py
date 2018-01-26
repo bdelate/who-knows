@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import View, UpdateView
+from django.views.generic import View, UpdateView, ListView
 from django.contrib.auth import login, authenticate, get_user
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile
 from votes.models import Vote
+from questions.models import Question
 
 
 class AccountCreate(View):
@@ -39,4 +40,14 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         kwargs['question_votes_received'] = Vote.objects.filter(questions__user=self.request.user).count()
+        kwargs['latest_questions'] = Question.objects.filter(user=self.request.user).order_by('-created_at')[:5]
         return super().get_context_data(**kwargs)
+
+
+class UserQuestionList(LoginRequiredMixin, ListView):
+
+    template_name = 'questions/index.html'
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Question.objects.filter(user=self.request.user).order_by('-created_at')
