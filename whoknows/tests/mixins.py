@@ -15,3 +15,8 @@ class BaseTestMixins:
         question2 = Question.objects.create(user=user, title='second question', content='content for second question')
         question2.tags.add(tag1)
         question2.tags.add(tag2)
+
+    def create_second_user():
+        User = get_user_model()
+        credentials = {'username': 'sally', 'password': 'p@ssw0rd'}
+        User.objects.create_user(**credentials)
