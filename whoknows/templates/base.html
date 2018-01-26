@@ -16,6 +16,8 @@
                 <a href="{% url 'account:login' %}">Log In / Sign Up</a>
             {% endif %}
         </header>
+        <span id="id_feedback"></span>
         {% block body %}{% endblock body %}
+        {% block bottom_body %}{% endblock bottom_body %}
     </body>
 </html>

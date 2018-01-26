@@ -5,6 +5,7 @@ from django.contrib.auth import login, authenticate, get_user
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile
+from votes.models import Vote
 
 
 class AccountCreate(View):
@@ -35,3 +36,7 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         current_user = get_user(self.request)
         return current_user.profile
+
+    def get_context_data(self, **kwargs):
+        kwargs['question_votes_received'] = Vote.objects.filter(questions__user=self.request.user).count()
+        return super().get_context_data(**kwargs)

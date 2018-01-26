@@ -1,10 +1,32 @@
 {% extends parent_template|default:"base.html" %}
+{% load staticfiles %}
 {% block body %}
-  <h2>Question - Detail</h2>
-  {{ object.title }}<br />
-  {{ object.content }}<br />
-  <h3>Tags:</h3>
-  {% for tag in object.tags.all %}
-    {{ tag.name }}<br />
-  {% endfor %}
+    <h2>Question - Detail</h2>
+    {{ object.title }}<br />
+    {{ object.content }}<br />
+    created by: {{ object.user }}
+    <h3>Votes:</h3>
+    Total votes: <span id="id_num_question_votes">{{ num_votes }}</span><br />
+    {% if already_voted or object.user != user %}
+        <section id="id_vote_section">
+            <form id="id_vote_form">
+                {% csrf_token %}
+                {{ vote_form.as_p }}
+                {% if already_voted %}
+                    <input type="hidden" name="form_url" value="{% url  'votes:remove_vote' %}" />
+                    <input type="submit" value="Remove my up vote" />
+                {% else %}
+                    <input type="hidden" name="form_url" value="{% url  'votes:up_vote' %}" />
+                    <input type="submit" value="Up vote this question" />
+                {% endif %}
+            </form>
+        </section>
+    {% endif %}
+    <h3>Tags:</h3>
+    {% for tag in object.tags.all %}
+        {{ tag.name }}<br />
+    {% endfor %}
 {% endblock body %}
+{% block bottom_body %}
+    <script src="{% static 'site/js/vote.js' %}"></script>
+{%  endblock bottom_body %}
