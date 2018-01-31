@@ -13,10 +13,10 @@
                 {% csrf_token %}
                 {{ vote_form.as_p }}
                 {% if already_voted %}
-                    <input type="hidden" name="form_url" value="{% url  'votes:remove_vote' %}" />
+                    <input type="hidden" name="form_url" value="{% url 'votes:remove_vote' %}" />
                     <input type="submit" value="Remove my up vote" />
                 {% else %}
-                    <input type="hidden" name="form_url" value="{% url  'votes:up_vote' %}" />
+                    <input type="hidden" name="form_url" value="{% url 'votes:up_vote' %}" />
                     <input type="submit" value="Up vote this question" />
                 {% endif %}
             </form>
@@ -26,7 +26,26 @@
     {% for tag in object.tags.all %}
         {{ tag.name }}<br />
     {% endfor %}
+    <section id="id_question_comment_section">
+        <h3>Comments:</h3>
+        {% for comment in object.comments.all %}
+            <p>{{ comment.content }}</p>
+            <p>Commented by: {{ comment.commenter}} - {{ comment.created_at }}</p>
+            <hr />
+        {% endfor %}
+    </section>
+    <section>
+        <a href="#" id="id_display_question_comment_form">Add a comment</a>
+        <form id="id_question_comment_form" hidden>
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <input type="submit" value="Post comment" />
+        </form>
+    </section>
 {% endblock body %}
 {% block bottom_body %}
-    <script src="{% static 'site/js/vote.js' %}"></script>
+    <script>
+        var comment_url = "{% url 'comments:create_comment' %}";
+    </script>
+    <script src="{% static 'questions/js/ajax_handler.js' %}"></script>
 {%  endblock bottom_body %}
