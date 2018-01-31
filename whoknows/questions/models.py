@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericRelation
 from votes.models import Vote
+from comments.models import Comment
 
 
 class Tag(models.Model):
@@ -25,6 +26,7 @@ class Question(models.Model):
     slug = models.SlugField(max_length=256)
     content = models.TextField()
     votes = GenericRelation(Vote, related_query_name='questions')
+    comments = GenericRelation(Comment, related_query_name='questions')
     created_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)
 
