@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 import os
+from django.conf import settings
 
 ADMIN_URL = os.environ['whoknows_admin_url']
 
@@ -26,3 +27,7 @@ urlpatterns = [
     path('account/', include('account.urls', namespace='account')),
     path(ADMIN_URL, admin.site.urls),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns.append(path('__debug__/', include(debug_toolbar.urls)))
