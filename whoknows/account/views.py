@@ -40,6 +40,7 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         kwargs['question_votes_received'] = Vote.objects.filter(questions__user=self.request.user).count()
+        kwargs['comment_votes_received'] = Vote.objects.filter(comments__commenter=self.request.user).count()
         kwargs['latest_questions'] = Question.objects.filter(user=self.request.user).order_by('-created_at')[:5]
         return super().get_context_data(**kwargs)
 
