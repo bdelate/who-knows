@@ -4,9 +4,11 @@ from tests.mixins import BaseTestMixins
 from votes.forms import VoteForm
 from django.urls import reverse
 from questions.models import Question
+from comments.models import Comment
+from django.db import transaction
 
 
-class GenericQuestionVoteTests:
+class GenericVoteTests:
     """View tests that are common to up voting and removing votes"""
 
     def test_invalid_form_returns_error(self, url):
@@ -16,14 +18,14 @@ class GenericQuestionVoteTests:
         response_message = response.json()['response']
         self.assertEqual(response_message, 'Invalid Vote')
 
-    def test_invalid_question_returns_error(self, url):
-        response = self.client.post(reverse(url), data={'object_id': '500', 'vote_type': 'question'})
+    def test_invalid_object_returns_error(self, url, vote_type):
+        response = self.client.post(reverse(url), data={'object_id': 500, 'vote_type': vote_type})
         self.assertEqual(response.status_code, 400)
         response_message = response.json()['response']
-        self.assertEqual(response_message, 'Invalid Question')
+        self.assertEqual(response_message, 'Invalid {}'.format(vote_type))
 
 
-class UpVoteQuestionTest(BaseTestMixins, GenericQuestionVoteTests, TestCase):
+class UpVoteTest(BaseTestMixins, GenericVoteTests, TestCase):
 
     credentials = {'username': 'john', 'password': 'p@ssw0rd'}
     second_user_credentials = {'username': 'sally', 'password': 'p@ssw0rd'}
@@ -37,41 +39,56 @@ class UpVoteQuestionTest(BaseTestMixins, GenericQuestionVoteTests, TestCase):
     def test_invalid_form_returns_error(self):
         super().test_invalid_form_returns_error(url='votes:up_vote')
 
-    def test_invalid_question_returns_error(self):
-        super().test_invalid_question_returns_error(url='votes:up_vote')
+    def test_invalid_object_returns_error(self):
+        super().test_invalid_object_returns_error(url='votes:up_vote', vote_type='question')
+        super().test_invalid_object_returns_error(url='votes:up_vote', vote_type='comment')
 
     def test_user_must_login_to_vote(self):
-        question = Question.objects.first()
-        response = self.client.post(reverse('votes:up_vote'), data={'object_id': question.id, 'vote_type': 'question'})
+        self.user_must_login_to_vote(obj=Question.objects.first(), vote_type='question')
+        self.user_must_login_to_vote(obj=Comment.objects.first(), vote_type='comment')
+
+    def user_must_login_to_vote(self, obj, vote_type):
+        response = self.client.post(reverse('votes:up_vote'), data={'object_id': obj.id, 'vote_type': vote_type})
         response_message = response.json()['response']
         self.assertIn('You have to be logged in to vote', response_message)
 
-    def test_user_cannot_vote_for_own_question(self):
-        self.client.post(reverse('account:login'), self.credentials)
-        question = Question.objects.first()
-        response = self.client.post(reverse('votes:up_vote'), data={'object_id': question.id, 'vote_type': 'question'})
-        self.assertEqual(response.status_code, 400)
-        response_message = response.json()['response']
-        self.assertEqual(response_message, 'You cannot vote for your own question')
+    def test_user_cannot_vote_for_own_object(self):
+        self.user_cannot_vote_for_own_object(obj=Question.objects.first(), vote_type='question')
+        self.user_cannot_vote_for_own_object(obj=Comment.objects.first(), vote_type='comment')
 
-    def test_user_can_only_vote_for_question_once(self):
-        self.client.post(reverse('account:login'), self.second_user_credentials)
-        question = Question.objects.first()
-        self.client.post(reverse('votes:up_vote'), data={'object_id': question.id, 'vote_type': 'question'})
-        response = self.client.post(reverse('votes:up_vote'), data={'object_id': question.id, 'vote_type': 'question'})
+    def user_cannot_vote_for_own_object(self, obj, vote_type):
+        self.client.post(reverse('account:login'), self.credentials)
+        response = self.client.post(reverse('votes:up_vote'), data={'object_id': obj.id, 'vote_type': vote_type})
         self.assertEqual(response.status_code, 400)
         response_message = response.json()['response']
-        self.assertEqual(response_message, 'You have already voted for this question')
+        self.assertEqual(response_message, 'You cannot vote for your own {}'.format(vote_type))
+
+    def test_user_can_only_vote_for_object_once(self):
+        with transaction.atomic():
+            self.user_can_only_vote_for_object_once(obj=Question.objects.first(), vote_type='question')
+        with transaction.atomic():
+            self.user_can_only_vote_for_object_once(obj=Comment.objects.first(), vote_type='comment')
+
+    def user_can_only_vote_for_object_once(self, obj, vote_type):
+        self.client.post(reverse('account:login'), self.second_user_credentials)
+        self.client.post(reverse('votes:up_vote'), data={'object_id': obj.id, 'vote_type': vote_type})
+        response = self.client.post(reverse('votes:up_vote'), data={'object_id': obj.id, 'vote_type': vote_type})
+        self.assertEqual(response.status_code, 400)
+        response_message = response.json()['response']
+        self.assertEqual(response_message, 'You have already voted for this {}'.format(vote_type))
 
     def test_successful_vote(self):
+        self.successful_vote(obj=Question.objects.first(), vote_type='question')
+        self.successful_vote(obj=Comment.objects.first(), vote_type='comment')
+
+    def successful_vote(self, obj, vote_type):
         self.client.post(reverse('account:login'), self.second_user_credentials)
-        question = Question.objects.first()
-        response = self.client.post(reverse('votes:up_vote'), data={'object_id': question.id, 'vote_type': 'question'})
+        response = self.client.post(reverse('votes:up_vote'), data={'object_id': obj.id, 'vote_type': vote_type})
         response_message = response.json()['response']
         self.assertEqual(response_message, 'Thanks for your vote')
 
 
-class RemoveVoteQuestionTest(BaseTestMixins, GenericQuestionVoteTests, TestCase):
+class RemoveVoteTest(BaseTestMixins, GenericVoteTests, TestCase):
 
     second_user_credentials = {'username': 'sally', 'password': 'p@ssw0rd'}
 
@@ -84,8 +101,9 @@ class RemoveVoteQuestionTest(BaseTestMixins, GenericQuestionVoteTests, TestCase)
     def test_invalid_form_returns_error(self):
         super().test_invalid_form_returns_error(url='votes:remove_vote')
 
-    def test_invalid_question_returns_error(self):
-        super().test_invalid_question_returns_error(url='votes:remove_vote')
+    def test_invalid_object_returns_error(self):
+        super().test_invalid_object_returns_error(url='votes:remove_vote', vote_type='question')
+        super().test_invalid_object_returns_error(url='votes:remove_vote', vote_type='comment')
 
     def test_invalid_voter_returns_error(self):
         question = Question.objects.first()

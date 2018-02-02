@@ -10,7 +10,7 @@ class VoteForm(forms.Form):
                                 max_length=8)
 
     def clean_vote_type(self):
-        if self.cleaned_data['vote_type'] in ['question', 'answer']:
+        if self.cleaned_data['vote_type'] in ['question', 'answer', 'comment']:
             return self.cleaned_data['vote_type']
         else:
             raise ValidationError('Invalid vote type')

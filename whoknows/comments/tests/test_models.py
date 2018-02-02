@@ -18,8 +18,9 @@ class CommentTest(BaseTestMixins, TestCase):
 
     def test_save_and_retrieve(self):
         question = Question.objects.first()
+        num_comments = Comment.objects.count()
         question.comments.create(commenter=self.user, content='test comment')
-        self.assertEqual(Comment.objects.count(), 1)
-        comment = Comment.objects.first()
+        self.assertEqual(Comment.objects.count(), num_comments + 1)
+        comment = Comment.objects.last()
         self.assertEqual(comment.commenter, self.user)
         self.assertEqual(comment.content, 'test comment')

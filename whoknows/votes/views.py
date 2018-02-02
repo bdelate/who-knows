@@ -2,6 +2,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.views.generic import View
 from questions.models import Question
+from comments.models import Comment
 from django.db.utils import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import VoteForm
@@ -17,9 +18,20 @@ class UpVote(View):
                 try:
                     object_instance = Question.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid Question', 'type': 'vote'}, status=400)
+                    return JsonResponse({'response': 'Invalid question', 'type': 'vote'}, status=400)
+                else:
+                    creator = object_instance.user
+                    slug = object_instance.slug
+            elif vote_form.cleaned_data['vote_type'] == 'comment':
+                try:
+                    object_instance = Comment.objects.get(id=object_id)
+                except ObjectDoesNotExist:
+                    return JsonResponse({'response': 'Invalid comment', 'type': 'vote'}, status=400)
+                else:
+                    creator = object_instance.commenter
+                    slug = object_instance.content_object.slug  # get the slug of the question
             if self.request.user.is_authenticated:
-                if object_instance.user != self.request.user:
+                if creator != self.request.user:
                     try:
                         object_instance.votes.create(voter=self.request.user)
                     except IntegrityError:
@@ -32,7 +44,7 @@ class UpVote(View):
                     return JsonResponse({'response': message, 'type': 'vote'}, status=400)
             else:
                 url = reverse('account:login')
-                url = '{}?next={}'.format(url, reverse('questions:detail', args=[object_instance.slug]))
+                url = '{}?next={}'.format(url, reverse('questions:detail', args=[slug]))
                 url = 'You have to be logged in to vote. Login/Signup <a href="{}">here</a>'.format(url)
                 return JsonResponse({'response': url, 'type': 'vote'})
         else:
@@ -49,7 +61,12 @@ class RemoveVote(View):
                 try:
                     object_instance = Question.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid Question', 'type': 'vote'}, status=400)
+                    return JsonResponse({'response': 'Invalid question', 'type': 'vote'}, status=400)
+            elif vote_form.cleaned_data['vote_type'] == 'comment':
+                try:
+                    object_instance = Comment.objects.get(id=object_id)
+                except ObjectDoesNotExist:
+                    return JsonResponse({'response': 'Invalid comment', 'type': 'vote'}, status=400)
             try:
                 vote = object_instance.votes.get(voter=request.user)
             except ObjectDoesNotExist:

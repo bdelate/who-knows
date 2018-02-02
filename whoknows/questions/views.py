@@ -47,18 +47,19 @@ class QuestionDetail(DetailView):
     template_name = 'questions/detail.html'
 
     def get(self, request, *args, **kwargs):
-        self.object = get_object_or_404(Question, slug=kwargs['slug'])
-        context = self.get_context_data(object=self.object)
-        return self.render_to_response(context)
-
-    def get_context_data(self, **kwargs):
-        super().get_context_data()
-        kwargs['vote_form'] = VoteForm(initial={'object_id': kwargs['object'].id, 'vote_type': 'question'})
-        kwargs['num_votes'] = kwargs['object'].votes.count()
-        kwargs['comment_form'] = CommentForm(initial={'object_id': kwargs['object'].id, 'comment_type': 'question'})
+        question = get_object_or_404(Question, slug=kwargs['slug'])
         if self.request.user.is_authenticated:
-            kwargs['already_voted'] = kwargs['object'].votes.filter(voter=self.request.user).count() == 1
-        return kwargs
+            user = self.request.user
+        else:  # anonymouse users cannot be used with filter(), therefore assign None if user is not logged in
+            user = None
+        context = {'vote_form': VoteForm(),
+                   'comment_form': CommentForm(initial={'object_id': question.id, 'comment_type': 'question'}),
+                   'question': {'object': question, 'voted': question.votes.filter(voter=user).exists(),
+                                'comments': []}}
+        for comment in question.comments.all():
+            comment_detail = {'object': comment, 'voted': comment.votes.filter(voter=user).exists()}
+            context['question']['comments'].append(comment_detail)
+        return self.render_to_response(context)
 
 
 class TagsList(ListView):
