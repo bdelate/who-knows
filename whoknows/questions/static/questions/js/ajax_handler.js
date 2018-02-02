@@ -66,6 +66,11 @@ for (var i=0; i<vote_forms.length; i++) {
 }
 
 id_display_question_comment_form.addEventListener('click', function(e) {
-    document.getElementById("id_content").value = '';
-    id_question_comment_form.removeAttribute('hidden');
+    if (user_authenticated == 'True') {
+        document.getElementById("id_content").value = '';
+        id_question_comment_form.removeAttribute('hidden');
+    } else {
+        document.getElementById('id_feedback').innerHTML = 'You have to be logged in to comment. Login/Signup <a href="'
+                                                            + login_redirect_url + '">here</a>';
+    }
 });
