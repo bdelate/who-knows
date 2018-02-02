@@ -12,9 +12,11 @@ class BaseTestMixins:
         tag2 = Tag.objects.create(name='tag2')
         question1 = Question.objects.create(user=user, title='first question', content='content for first question')
         question1.tags.add(tag1)
+        question1.comments.create(commenter=user, content='comment for first question')
         question2 = Question.objects.create(user=user, title='second question', content='content for second question')
         question2.tags.add(tag1)
         question2.tags.add(tag2)
+        question2.comments.create(commenter=user, content='comment for second question')
 
     def create_second_user():
         User = get_user_model()

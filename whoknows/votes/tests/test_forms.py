@@ -9,6 +9,8 @@ class VoteTest(TestCase):
         self.assertTrue(form.is_valid())
         form = VoteForm(data={'object_id': '1', 'vote_type': 'answer'})
         self.assertTrue(form.is_valid())
+        form = VoteForm(data={'object_id': '1', 'vote_type': 'comment'})
+        self.assertTrue(form.is_valid())
 
     def test_all_fields_required(self):
         form = VoteForm(data={'object_id': '', 'vote_type': ''})

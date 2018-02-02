@@ -12,4 +12,4 @@ class Vote(models.Model):
 
     class Meta:
 
-        unique_together = ('voter', 'object_id')
+        unique_together = ('voter', 'content_type', 'object_id')
