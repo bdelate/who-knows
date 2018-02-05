@@ -1,11 +1,13 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, DetailView, ListView
+from comments.models import Comment
 from .models import Question, Tag
+from django.db.models import Count
+from django.db.models import Exists, OuterRef
 from .forms import QuestionForm, TagForm
 from django.shortcuts import redirect, render
 from votes.forms import VoteForm
-from comments.forms import CommentForm
 
 
 class HomePage(ListView):
@@ -47,18 +49,20 @@ class QuestionDetail(DetailView):
     template_name = 'questions/detail.html'
 
     def get(self, request, *args, **kwargs):
-        question = get_object_or_404(Question, slug=kwargs['slug'])
-        if self.request.user.is_authenticated:
-            user = self.request.user
-        else:  # anonymouse users cannot be used with filter(), therefore assign None if user is not logged in
-            user = None
+        # anonymous users cannot be used in fitler clause, therefore assign None
+        user = self.request.user if self.request.user.is_authenticated else None
+        voted_for_question = Question.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
+        question_query = Question.objects.select_related('user').annotate(num_votes=Count('votes'),
+                                                                          voted=Exists(voted_for_question))
+        question = get_object_or_404(question_query, slug=kwargs['slug'])
         context = {'vote_form': VoteForm(),
-                   'comment_form': CommentForm(initial={'object_id': question.id, 'comment_type': 'question'}),
-                   'question': {'object': question, 'voted': question.votes.filter(voter=user).exists(),
-                                'comments': []}}
-        for comment in question.comments.all():
-            comment_detail = {'object': comment, 'voted': comment.votes.filter(voter=user).exists()}
-            context['question']['comments'].append(comment_detail)
+                   'question': {'question': question, 'comments': []}}
+
+        voted_for_comment = Comment.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
+        comment_query = question.comments.prefetch_related('commenter').annotate(num_votes=Count('votes'),
+                                                                                 voted=Exists(voted_for_comment))
+        for comment in comment_query:
+            context['question']['comments'].append(comment)
         return self.render_to_response(context)
 
 
