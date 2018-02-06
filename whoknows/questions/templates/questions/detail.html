@@ -54,9 +54,9 @@
         <a href="#" id="id_display_question_comment_form">Add a comment</a>
         <form id="id_question_comment_form" hidden>
             {% csrf_token %}
-            <input type="hidden" name="object_id" value="{{ question.question.id }}" readonly="readonly" />
-            <textarea name="content" cols="40" rows="10" required="" id="id_content"></textarea>
-            <input type="hidden" name="comment_type" value="question" readonly="readonly" id="id_comment_type" />
+            <input type="hidden" name="comment-object_id" value="{{ question.question.id }}" readonly="readonly" />
+            <textarea name="comment-content" cols="40" rows="10" required="" id="id_comment-content"></textarea>
+            <input type="hidden" name="comment-comment_type" value="question" readonly="readonly" id="id_comment-comment_type" />
             <input type="submit" value="Post comment" />
         </form>
     </div>

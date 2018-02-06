@@ -9,7 +9,8 @@ from django.urls import reverse
 class CreateComment(View):
 
     def post(self, request, *args, **kwargs):
-        comment_form = CommentForm(request.POST)
+        comment_form = CommentForm(request.POST, prefix='comment')
+        print(comment_form)
         if comment_form.is_valid():
             object_id = comment_form.cleaned_data['object_id']
             if comment_form.cleaned_data['comment_type'] == 'question':

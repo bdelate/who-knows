@@ -51,7 +51,7 @@ xhr.onload = function() {
     document.getElementById('id_feedback').innerHTML = responseObject['response'];
     if (xhr.status == 200) {
         if (responseObject['type'] == 'comment') {
-            display_new_comment('id_question_comments', document.getElementById("id_content").value);
+            display_new_comment('id_question_comments', document.getElementById("id_comment-content").value);
         }
     }
 }
@@ -67,7 +67,7 @@ for (var i=0; i<vote_forms.length; i++) {
 
 id_display_question_comment_form.addEventListener('click', function(e) {
     if (user_authenticated == 'True') {
-        document.getElementById("id_content").value = '';
+        document.getElementById("id_comment-content").value = '';
         id_question_comment_form.removeAttribute('hidden');
     } else {
         document.getElementById('id_feedback').innerHTML = 'You have to be logged in to comment. Login/Signup <a href="'
