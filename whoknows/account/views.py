@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.generic import View, UpdateView, ListView
-from django.contrib.auth import login, authenticate, get_user
+from django.shortcuts import redirect
+from django.views.generic import UpdateView, ListView, CreateView
+from django.contrib.auth import login, get_user
+from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile
@@ -9,22 +9,16 @@ from votes.models import Vote
 from questions.models import Question
 
 
-class AccountCreate(View):
+class AccountCreate(CreateView):
 
-    def get(self, request):
-        form = UserCreationForm()
-        return render(request, 'account/create.html', {'form': form})
+    model = settings.AUTH_USER_MODEL
+    form_class = UserCreationForm
+    template_name = 'account/create.html'
 
-    def post(self, request):
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect(reverse('account:profile'))
-        return render(request, 'account/create.html', {'form': form})
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('account:profile')
 
 
 class ProfileUpdate(LoginRequiredMixin, UpdateView):
