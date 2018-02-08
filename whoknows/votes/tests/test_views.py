@@ -50,7 +50,7 @@ class UpVoteTest(BaseTestMixins, GenericVoteTests, TestCase):
     def user_must_login_to_vote(self, obj, vote_type):
         response = self.client.post(reverse('votes:up_vote'), data={'object_id': obj.id, 'vote_type': vote_type})
         response_message = response.json()['response']
-        self.assertIn('You have to be logged in to vote', response_message)
+        self.assertIn('login required', response_message)
 
     def test_user_cannot_vote_for_own_object(self):
         self.user_cannot_vote_for_own_object(obj=Question.objects.first(), vote_type='question')

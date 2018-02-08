@@ -3,14 +3,12 @@ from comments.forms import CommentForm
 from django.http import JsonResponse
 from questions.models import Question
 from django.core.exceptions import ObjectDoesNotExist
-from django.urls import reverse
 
 
 class CreateComment(View):
 
     def post(self, request, *args, **kwargs):
-        comment_form = CommentForm(request.POST, prefix='comment')
-        print(comment_form)
+        comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             object_id = comment_form.cleaned_data['object_id']
             if comment_form.cleaned_data['comment_type'] == 'question':
@@ -23,9 +21,6 @@ class CreateComment(View):
                                                 content=comment_form.cleaned_data['content'])
                 return JsonResponse({'response': 'Comment created', 'type': 'comment'})
             else:
-                url = reverse('account:login')
-                url = '{}?next={}'.format(url, reverse('questions:detail', args=[object_instance.slug]))
-                url = 'You have to be logged in to comment. Login/Signup <a href="{}">here</a>'.format(url)
-                return JsonResponse({'response': url, 'type': 'comment'})
+                return JsonResponse({'response': 'login required', 'type': 'comment'})
         else:
             return JsonResponse({'response': 'Invalid Comment', 'type': 'comment'}, status=400)

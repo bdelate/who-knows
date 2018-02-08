@@ -5,7 +5,7 @@ from django.urls import reverse
 from questions.models import Question
 
 
-class UpVoteQuestionTest(BaseTestMixins, TestCase):
+class CommentTest(BaseTestMixins, TestCase):
 
     credentials = {'username': 'john', 'password': 'p@ssw0rd'}
 
@@ -33,7 +33,7 @@ class UpVoteQuestionTest(BaseTestMixins, TestCase):
         response = self.client.post(reverse('comments:create_comment'),
                                     data={'object_id': question.id, 'comment_type': 'question', 'content': 'test comment'})
         response_message = response.json()['response']
-        self.assertIn('You have to be logged in to comment', response_message)
+        self.assertIn('login required', response_message)
 
     def test_successful_comment(self):
         self.client.post(reverse('account:login'), self.credentials)

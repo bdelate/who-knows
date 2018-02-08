@@ -6,6 +6,7 @@ from .models import Question, Tag
 from django.db.models import Count
 from django.db.models import Exists, OuterRef
 from .forms import QuestionForm, TagForm
+from answers.forms import AnswerForm
 from django.shortcuts import redirect, render
 from votes.forms import VoteForm
 
@@ -52,8 +53,8 @@ class QuestionDetail(DetailView):
         # anonymous users cannot be used in fitler clause, therefore assign None
         user = self.request.user if self.request.user.is_authenticated else None
         voted_for_question = Question.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
-        question_query = Question.objects.select_related('user').annotate(num_votes=Count('votes'),
-                                                                          voted=Exists(voted_for_question))
+        question_query = Question.objects.prefetch_related('answer_set').select_related('user').annotate(num_votes=Count('votes'),
+                                                                                                         voted=Exists(voted_for_question))
         question = get_object_or_404(question_query, slug=kwargs['slug'])
         context = {'vote_form': VoteForm(),
                    'question': {'question': question, 'comments': []}}
@@ -63,6 +64,8 @@ class QuestionDetail(DetailView):
                                                                                  voted=Exists(voted_for_comment))
         for comment in comment_query:
             context['question']['comments'].append(comment)
+
+        context['answer_form'] = AnswerForm(initial={'question': question, 'user': self.request.user}, prefix='answer')
         return self.render_to_response(context)
 
 

@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('questions.urls', namespace='questions')),
     path('vote/', include('votes.urls', namespace='votes')),
     path('comment/', include('comments.urls', namespace='comments')),
+    path('answer/', include('answers.urls', namespace='answers')),
     path('account/', include('account.urls', namespace='account')),
     path(ADMIN_URL, admin.site.urls),
 ]

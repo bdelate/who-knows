@@ -21,7 +21,6 @@ class UpVote(View):
                     return JsonResponse({'response': 'Invalid question', 'type': 'vote'}, status=400)
                 else:
                     creator = object_instance.user
-                    slug = object_instance.slug
             elif vote_form.cleaned_data['vote_type'] == 'comment':
                 try:
                     object_instance = Comment.objects.get(id=object_id)
@@ -29,7 +28,6 @@ class UpVote(View):
                     return JsonResponse({'response': 'Invalid comment', 'type': 'vote'}, status=400)
                 else:
                     creator = object_instance.commenter
-                    slug = object_instance.content_object.slug  # get the slug of the question
             if self.request.user.is_authenticated:
                 if creator != self.request.user:
                     try:
@@ -43,10 +41,7 @@ class UpVote(View):
                     message = 'You cannot vote for your own {}'.format(vote_form.cleaned_data['vote_type'])
                     return JsonResponse({'response': message, 'type': 'vote'}, status=400)
             else:
-                url = reverse('account:login')
-                url = '{}?next={}'.format(url, reverse('questions:detail', args=[slug]))
-                url = 'You have to be logged in to vote. Login/Signup <a href="{}">here</a>'.format(url)
-                return JsonResponse({'response': url, 'type': 'vote'})
+                return JsonResponse({'response': 'login required', 'type': 'vote'})
         else:
             return JsonResponse({'response': 'Invalid Vote', 'type': 'vote'}, status=400)
 
