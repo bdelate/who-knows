@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, DetailView, ListView
 from comments.models import Comment
+from answers.models import Answer
 from .models import Question, Tag
 from django.db.models import Count
 from django.db.models import Exists, OuterRef
@@ -53,8 +54,8 @@ class QuestionDetail(DetailView):
         # anonymous users cannot be used in fitler clause, therefore assign None
         user = self.request.user if self.request.user.is_authenticated else None
         voted_for_question = Question.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
-        question_query = Question.objects.prefetch_related('answer_set').select_related('user').annotate(num_votes=Count('votes'),
-                                                                                                         voted=Exists(voted_for_question))
+        question_query = Question.objects.select_related('user').annotate(num_votes=Count('votes'),
+                                                                          voted=Exists(voted_for_question))
         question = get_object_or_404(question_query, slug=kwargs['slug'])
         context = {'vote_form': VoteForm(),
                    'question': {'question': question, 'comments': []}}
@@ -65,7 +66,12 @@ class QuestionDetail(DetailView):
         for comment in comment_query:
             context['question']['comments'].append(comment)
 
+        voted_for_answer = Answer.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
+        answers = Answer.objects.prefetch_related('user').filter(question=question).annotate(num_votes=Count('votes'),
+                                                                                             voted=Exists(voted_for_answer))
+        context['answers'] = answers
         context['answer_form'] = AnswerForm(initial={'question': question, 'user': self.request.user}, prefix='answer')
+
         return self.render_to_response(context)
 
 

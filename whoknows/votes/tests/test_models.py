@@ -3,6 +3,7 @@ from tests.mixins import BaseTestMixins
 from votes.models import Vote
 from questions.models import Question
 from comments.models import Comment
+from answers.models import Answer
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 from django.db import transaction
@@ -53,6 +54,23 @@ class VoteTest(BaseTestMixins, TestCase):
         try:
             with transaction.atomic():
                 comment.votes.create(voter=self.user)
+        except IntegrityError:
+            pass
+        self.assertEqual(Vote.objects.all().count(), 1)
+
+    def test_save_and_retrieve_answer_vote(self):
+        answer = Answer.objects.first()
+        answer.votes.create(voter=self.user)
+        self.assertEqual(Vote.objects.count(), 1)
+        vote = Vote.objects.first()
+        self.assertEqual(vote.voter, self.user)
+
+    def test_user_can_only_vote_for_answer_once(self):
+        answer = Answer.objects.first()
+        answer.votes.create(voter=self.user)
+        try:
+            with transaction.atomic():
+                answer.votes.create(voter=self.user)
         except IntegrityError:
             pass
         self.assertEqual(Vote.objects.all().count(), 1)

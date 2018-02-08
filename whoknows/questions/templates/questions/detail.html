@@ -77,10 +77,25 @@
     </div>
     <h3>Answers</h3>
     <div class="answers" id="id_answers">
-        {% for answer in question.question.answer_set.all %}
+        {% for answer in answers %}
             <div class="answer">
                 <p>{{ answer.content }}</p>
                 <p>Answered by: {{ answer.user }} - {{ answer.created_at }}</p>
+                <p>Total votes: <span id="answer_vote_total_{{ answer.id }}">{{ answer.num_votes }}</span></p>
+                {% if answer.user != user %}
+                    <section class="vote">
+                        <form class="vote_form">
+                            {% csrf_token %}
+                            <input type="hidden" name="object_id" value="{{ answer.id }}" readonly="readonly">
+                            <input type="hidden" name="vote_type" value="answer" readonly="readonly">
+                            <input type="hidden" name="form_url"
+                            value="{% if answer.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
+                            <input type="hidden" name="operation" value="{% if answer.voted %}-1{% else %}1{% endif %}" />
+                            <input type="submit" name="submit"
+                            value="{% if answer.voted %}Remove my up vote{% else %}Up vote this answer{% endif %}" />
+                        </form>
+                    </section>
+                {% endif %}
             </div>
             <hr />
         {% endfor %}

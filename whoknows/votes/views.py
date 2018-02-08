@@ -1,8 +1,8 @@
-from django.urls import reverse
 from django.http import JsonResponse
 from django.views.generic import View
 from questions.models import Question
 from comments.models import Comment
+from answers.models import Answer
 from django.db.utils import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import VoteForm
@@ -28,6 +28,13 @@ class UpVote(View):
                     return JsonResponse({'response': 'Invalid comment', 'type': 'vote'}, status=400)
                 else:
                     creator = object_instance.commenter
+            elif vote_form.cleaned_data['vote_type'] == 'answer':
+                try:
+                    object_instance = Answer.objects.get(id=object_id)
+                except ObjectDoesNotExist:
+                    return JsonResponse({'response': 'Invalid answer', 'type': 'vote'}, status=400)
+                else:
+                    creator = object_instance.user
             if self.request.user.is_authenticated:
                 if creator != self.request.user:
                     try:
@@ -62,6 +69,11 @@ class RemoveVote(View):
                     object_instance = Comment.objects.get(id=object_id)
                 except ObjectDoesNotExist:
                     return JsonResponse({'response': 'Invalid comment', 'type': 'vote'}, status=400)
+            elif vote_form.cleaned_data['vote_type'] == 'answer':
+                try:
+                    object_instance = Answer.objects.get(id=object_id)
+                except ObjectDoesNotExist:
+                    return JsonResponse({'response': 'Invalid answer', 'type': 'vote'}, status=400)
             try:
                 vote = object_instance.votes.get(voter=request.user)
             except ObjectDoesNotExist:
