@@ -82,7 +82,7 @@
                 <h4>Answer</h4>
                 <p>{{ answer.answer.content }}</p>
                 <p>Answered by: {{ answer.answer.user }} - {{ answer.answer.created_at }}</p>
-                <p>Total votes: <span id="answer_vote_total_{{ answer.id }}">{{ answer.answer.num_votes }}</span></p>
+                <p>Total votes: <span id="answer_vote_total_{{ answer.answer.id }}">{{ answer.answer.num_votes }}</span></p>
                 {% if answer.answer.user != user %}
                     <section class="vote">
                         <form class="vote_form">
