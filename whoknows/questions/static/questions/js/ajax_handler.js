@@ -102,9 +102,9 @@ for (var i=0; i<comment_forms.length; i++) {
 // event listeners for every display_comment_form link (the question plus every answer has one of these)
 display_comment_form_links = document.getElementsByClassName('display_comment_form');
 for (var i=0; i<display_comment_form_links.length; i++) {
-    comment_form = display_comment_form_links[i].parentElement.querySelector('.comment_form');
     display_comment_form_links[i].addEventListener('click', function(e) {
         if (user_authenticated == 'True') {
+            comment_form = e.srcElement.parentElement.querySelector('.comment_form');
             comment_form.removeAttribute('hidden');
             comment_form.content.value = '';
         } else {

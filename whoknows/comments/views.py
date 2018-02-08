@@ -2,6 +2,7 @@ from django.views.generic import View
 from comments.forms import CommentForm
 from django.http import JsonResponse
 from questions.models import Question
+from answers.models import Answer
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -16,6 +17,11 @@ class CreateComment(View):
                     object_instance = Question.objects.get(id=object_id)
                 except ObjectDoesNotExist:
                     return JsonResponse({'response': 'Invalid Question', 'type': 'comment'}, status=400)
+            if comment_form.cleaned_data['comment_type'] == 'answer':
+                try:
+                    object_instance = Answer.objects.get(id=object_id)
+                except ObjectDoesNotExist:
+                    return JsonResponse({'response': 'Invalid Answer', 'type': 'answer'}, status=400)
             if self.request.user.is_authenticated:
                 object_instance.comments.create(commenter=self.request.user,
                                                 content=comment_form.cleaned_data['content'])

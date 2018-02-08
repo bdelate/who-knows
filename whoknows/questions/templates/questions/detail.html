@@ -75,27 +75,62 @@
             <input type="submit" value="Post answer" />
         </form>
     </div>
-    <h3>Answers</h3>
+    <h2>Answers</h2>
     <div class="answers" id="id_answers">
         {% for answer in answers %}
             <div class="answer">
-                <p>{{ answer.content }}</p>
-                <p>Answered by: {{ answer.user }} - {{ answer.created_at }}</p>
-                <p>Total votes: <span id="answer_vote_total_{{ answer.id }}">{{ answer.num_votes }}</span></p>
-                {% if answer.user != user %}
+                <h4>Answer</h4>
+                <p>{{ answer.answer.content }}</p>
+                <p>Answered by: {{ answer.answer.user }} - {{ answer.answer.created_at }}</p>
+                <p>Total votes: <span id="answer_vote_total_{{ answer.id }}">{{ answer.answer.num_votes }}</span></p>
+                {% if answer.answer.user != user %}
                     <section class="vote">
                         <form class="vote_form">
                             {% csrf_token %}
-                            <input type="hidden" name="object_id" value="{{ answer.id }}" readonly="readonly">
+                            <input type="hidden" name="object_id" value="{{ answer.answer.id }}" readonly="readonly">
                             <input type="hidden" name="vote_type" value="answer" readonly="readonly">
                             <input type="hidden" name="form_url"
-                            value="{% if answer.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
-                            <input type="hidden" name="operation" value="{% if answer.voted %}-1{% else %}1{% endif %}" />
+                            value="{% if answer.answer.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
+                            <input type="hidden" name="operation" value="{% if answer.answer.voted %}-1{% else %}1{% endif %}" />
                             <input type="submit" name="submit"
-                            value="{% if answer.voted %}Remove my up vote{% else %}Up vote this answer{% endif %}" />
+                            value="{% if answer.answer.voted %}Remove my up vote{% else %}Up vote this answer{% endif %}" />
                         </form>
                     </section>
                 {% endif %}
+            </div>
+            <div class="comments">
+                <h4>Answer Comments:</h4>
+                {% for comment in answer.comments %}
+                    <div class="comment">
+                        <p>{{ comment.content }}</p>
+                        <p>Commented by: {{ comment.commenter }} - {{ comment.created_at }}</p>
+                        <p>Total votes: <span id="comment_vote_total_{{ comment.id }}">{{ comment.num_votes }}</span></p>
+                        {% if comment.commenter != user %}
+                            <section class="vote">
+                                <form class="vote_form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="object_id" value="{{ comment.id }}" readonly="readonly">
+                                    <input type="hidden" name="vote_type" value="comment" readonly="readonly">
+                                    <input type="hidden" name="form_url"
+                                    value="{% if comment.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
+                                    <input type="hidden" name="operation" value="{% if comment.voted %}-1{% else %}1{% endif %}" />
+                                    <input type="submit" name="submit"
+                                    value="{% if comment.voted %}Remove my up vote{% else %}Up vote this comment{% endif %}" />
+                                </form>
+                            </section>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="create_comment">
+                <a href="#" class="display_comment_form">Comment on this answer</a>
+                <form class="comment_form" hidden>
+                    {% csrf_token %}
+                    <input type="hidden" name="object_id" value="{{ answer.answer.id }}" readonly="readonly" />
+                    <textarea name="content" cols="40" rows="10" required=""></textarea>
+                    <input type="hidden" name="comment_type" value="answer" readonly="readonly" />
+                    <input type="submit" value="Post comment" />
+                </form>
             </div>
             <hr />
         {% endfor %}
