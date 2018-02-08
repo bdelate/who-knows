@@ -50,7 +50,8 @@ class AnswerTest(BaseTestMixins, TestCase):
 
     def test_successful_answer(self):
         self.client.post(reverse('account:login'), self.credentials)
-        question = Question.objects.first()
+        question = Question.objects.last()
+        num_answers = Answer.objects.count()
         response = self.client.post(reverse('answers:create_answer'),
                                     data={'answer-user': self.user.id,
                                           'answer-content': 'test answer',
@@ -58,7 +59,7 @@ class AnswerTest(BaseTestMixins, TestCase):
         self.assertEqual(response.status_code, 200)
         response_message = response.json()['response']
         self.assertEqual(response_message, 'Answer created')
-        self.assertEqual(Answer.objects.count(), 1)
+        self.assertEqual(Answer.objects.count(), num_answers + 1)
 
     def test_user_can_only_answer_question_once(self):
         self.client.post(reverse('account:login'), self.credentials)

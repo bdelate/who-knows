@@ -31,7 +31,7 @@
     {% for tag in question.question.tags.all %}
         {{ tag.name }}<br />
     {% endfor %}
-    <div class="comments" id="id_question_comments">
+    <div class="comments">
         <h3>Comments:</h3>
         {% for comment in question.comments %}
             <div class="comment">
@@ -57,12 +57,12 @@
         {% endfor %}
     </div>
     <div class="create_comment">
-        <a href="#" id="id_display_question_comment_form">Comment on this question</a>
-        <form id="id_question_comment_form" hidden>
+        <a href="#" class="display_comment_form">Comment on this question</a>
+        <form class="comment_form" hidden>
             {% csrf_token %}
             <input type="hidden" name="object_id" value="{{ question.question.id }}" readonly="readonly" />
-            <textarea name="content" cols="40" rows="10" required="" id="id_content"></textarea>
-            <input type="hidden" name="comment_type" value="question" readonly="readonly" id="id_comment_type" />
+            <textarea name="content" cols="40" rows="10" required=""></textarea>
+            <input type="hidden" name="comment_type" value="question" readonly="readonly" />
             <input type="submit" value="Post comment" />
         </form>
     </div>

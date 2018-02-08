@@ -18,10 +18,11 @@ class AnswerTest(BaseTestMixins, TestCase):
 
     def test_save_and_retrieve(self):
         question = Question.objects.first()
+        num_answers = Answer.objects.count()
         answer = Answer.objects.create(user=self.user,
                                        question=question,
                                        content='test answer')
-        self.assertEqual(Answer.objects.count(), 1)
+        self.assertEqual(Answer.objects.count(), num_answers + 1)
         self.assertEqual(answer.user, self.user)
         self.assertEqual(answer.question, question)
         self.assertEqual(answer.content, 'test answer')
