@@ -71,8 +71,10 @@ class QuestionDetail(DetailView):
 
         # get the answers for the question
         voted_for_answer = Answer.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
-        answers = Answer.objects.prefetch_related('user').filter(question=question).annotate(num_votes=Count('votes'),
-                                                                                             voted=Exists(voted_for_answer))
+        answers = Answer.objects.prefetch_related('user').filter(question=question) \
+                                                         .annotate(num_votes=Count('votes'),
+                                                                   voted=Exists(voted_for_answer)) \
+                                                         .order_by('-accepted', '-created_at')
         for answer in answers:
             comments = []
             # get the comments for each answer

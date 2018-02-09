@@ -83,6 +83,16 @@
                 <p>{{ answer.answer.content }}</p>
                 <p>Answered by: {{ answer.answer.user }} - {{ answer.answer.created_at }}</p>
                 <p>Total votes: <span id="answer_vote_total_{{ answer.answer.id }}">{{ answer.answer.num_votes }}</span></p>
+                <div class="accept">
+                    {% if user == question.question.user %}
+                        <form class="accept__form{% if answer.answer.accepted %}--accepted{% endif %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="answer_id" value="{{ answer.answer.id }}" readonly="readonly">
+                            <input type="hidden" name="form_url" value="{% url 'answers:toggle_accept' %}" readonly="readonly">
+                            <input type="submit" name="submit" value="{% if answer.answer.accepted %}Unaccept answer{% else %}Accept answer{% endif %}" />
+                        </form>
+                    {% endif %}
+                </div>
                 {% if answer.answer.user != user %}
                     <section class="vote">
                         <form class="vote_form">
