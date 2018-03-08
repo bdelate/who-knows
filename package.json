@@ -1,0 +1,29 @@
+{
+  "name": "who-knows",
+  "version": "1.0.0",
+  "description": "Django based question and answer site similar to Stack Overflow or Quora",
+  "main": "index.js",
+  "scripts": {
+    "watch:sass": "node-sass whoknows/static/site/sass/main.scss whoknows/static/site/css/style.css -w",
+    "compile:sass": "node-sass whoknows/static/site/sass/main.scss whoknows/static/site/css/style.comp.css",
+    "prefix:css": "postcss --use autoprefixer -b 'last 5 versions' whoknows/static/site/css/style.comp.css -o whoknows/static/site/css/style.prefix.css",
+    "compress:css": "node-sass whoknows/static/site/css/style.prefix.css whoknows/static/site/css/style.css --output-style compressed",
+    "build:css": "npm-run-all compile:sass prefix:css compress:css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bdelate/who-knows.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bdelate/who-knows/issues"
+  },
+  "homepage": "https://github.com/bdelate/who-knows#readme",
+  "devDependencies": {
+    "autoprefixer": "^8.1.0",
+    "node-sass": "^4.7.2",
+    "npm-run-all": "^4.1.2",
+    "postcss-cli": "^5.0.0"
+  }
+}
