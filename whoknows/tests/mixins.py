@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from questions.models import Question, Tag
+from answers.models import Answer
 
 
 class BaseTestMixins:
@@ -13,6 +14,7 @@ class BaseTestMixins:
         question1 = Question.objects.create(user=user, title='first question', content='content for first question')
         question1.tags.add(tag1)
         question1.comments.create(commenter=user, content='comment for first question')
+        Answer.objects.create(user=user, question=question1, content='test answer')
         question2 = Question.objects.create(user=user, title='second question', content='content for second question')
         question2.tags.add(tag1)
         question2.tags.add(tag2)

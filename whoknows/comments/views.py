@@ -2,8 +2,8 @@ from django.views.generic import View
 from comments.forms import CommentForm
 from django.http import JsonResponse
 from questions.models import Question
+from answers.models import Answer
 from django.core.exceptions import ObjectDoesNotExist
-from django.urls import reverse
 
 
 class CreateComment(View):
@@ -17,14 +17,16 @@ class CreateComment(View):
                     object_instance = Question.objects.get(id=object_id)
                 except ObjectDoesNotExist:
                     return JsonResponse({'response': 'Invalid Question', 'type': 'comment'}, status=400)
+            if comment_form.cleaned_data['comment_type'] == 'answer':
+                try:
+                    object_instance = Answer.objects.get(id=object_id)
+                except ObjectDoesNotExist:
+                    return JsonResponse({'response': 'Invalid Answer', 'type': 'answer'}, status=400)
             if self.request.user.is_authenticated:
                 object_instance.comments.create(commenter=self.request.user,
                                                 content=comment_form.cleaned_data['content'])
                 return JsonResponse({'response': 'Comment created', 'type': 'comment'})
             else:
-                url = reverse('account:login')
-                url = '{}?next={}'.format(url, reverse('questions:detail', args=[object_instance.slug]))
-                url = 'You have to be logged in to comment. Login/Signup <a href="{}">here</a>'.format(url)
-                return JsonResponse({'response': url, 'type': 'comment'})
+                return JsonResponse({'response': 'login required', 'type': 'comment'})
         else:
             return JsonResponse({'response': 'Invalid Comment', 'type': 'comment'}, status=400)

@@ -2,10 +2,12 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, DetailView, ListView
 from comments.models import Comment
+from answers.models import Answer
 from .models import Question, Tag
 from django.db.models import Count
 from django.db.models import Exists, OuterRef
 from .forms import QuestionForm, TagForm
+from answers.forms import AnswerForm
 from django.shortcuts import redirect, render
 from votes.forms import VoteForm
 
@@ -56,13 +58,33 @@ class QuestionDetail(DetailView):
                                                                           voted=Exists(voted_for_question))
         question = get_object_or_404(question_query, slug=kwargs['slug'])
         context = {'vote_form': VoteForm(),
-                   'question': {'question': question, 'comments': []}}
+                   'answer_form': AnswerForm(initial={'question': question, 'user': self.request.user}, prefix='answer'),
+                   'question': {'question': question, 'comments': []},
+                   'answers': []}
 
+        # get the comments for the question
         voted_for_comment = Comment.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
         comment_query = question.comments.prefetch_related('commenter').annotate(num_votes=Count('votes'),
                                                                                  voted=Exists(voted_for_comment))
         for comment in comment_query:
             context['question']['comments'].append(comment)
+
+        # get the answers for the question
+        voted_for_answer = Answer.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
+        answers = Answer.objects.prefetch_related('user').filter(question=question) \
+                                                         .annotate(num_votes=Count('votes'),
+                                                                   voted=Exists(voted_for_answer)) \
+                                                         .order_by('-accepted', '-created_at')
+        for answer in answers:
+            comments = []
+            # get the comments for each answer
+            comment_query = answer.comments.prefetch_related('commenter').annotate(num_votes=Count('votes'),
+                                                                                   voted=Exists(voted_for_comment))
+            for comment in comment_query:
+                comments.append(comment)
+            # append this answer along with all its comments to context
+            context['answers'].append({'answer': answer, 'comments': comments})
+
         return self.render_to_response(context)
 
 

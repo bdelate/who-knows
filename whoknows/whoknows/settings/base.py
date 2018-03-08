@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'account',
     'votes',
     'comments',
+    'answers',
 ]
 
 MIDDLEWARE = [

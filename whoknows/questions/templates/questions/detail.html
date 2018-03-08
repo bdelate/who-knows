@@ -1,6 +1,12 @@
 {% extends parent_template|default:"base.html" %}
 {% load staticfiles %}
 {% block body %}
+    <div id="id_login_redirect" hidden>
+        <span>
+            You need to login / signup before doing this.
+            You can login / signup <a href="{% url 'account:login' %}?next={{ question.question.get_absolute_url }}">here</a>
+        </span>
+    </div>
     <h2>Question - Detail</h2>
     {{ question.question.title }}<br />
     {{ question.question.content }}<br />
@@ -25,7 +31,7 @@
     {% for tag in question.question.tags.all %}
         {{ tag.name }}<br />
     {% endfor %}
-    <div class="comments" id="id_question_comments">
+    <div class="comments">
         <h3>Comments:</h3>
         {% for comment in question.comments %}
             <div class="comment">
@@ -51,20 +57,98 @@
         {% endfor %}
     </div>
     <div class="create_comment">
-        <a href="#" id="id_display_question_comment_form">Add a comment</a>
-        <form id="id_question_comment_form" hidden>
+        <a href="#" class="display_comment_form">Comment on this question</a>
+        <form class="comment_form" hidden>
             {% csrf_token %}
             <input type="hidden" name="object_id" value="{{ question.question.id }}" readonly="readonly" />
-            <textarea name="content" cols="40" rows="10" required="" id="id_content"></textarea>
-            <input type="hidden" name="comment_type" value="question" readonly="readonly" id="id_comment_type" />
+            <textarea name="content" cols="40" rows="10" required=""></textarea>
+            <input type="hidden" name="comment_type" value="question" readonly="readonly" />
             <input type="submit" value="Post comment" />
         </form>
+    </div>
+    <div class="create_answer">
+        <a href="#" id="id_display_answer_form">Answer this question</a>
+        <form id="id_answer_form" hidden>
+            {% csrf_token %}
+            {{ answer_form.as_p }}
+            <input type="hidden" name="create_answer_url" value="{% url 'answers:create_answer' %}" readonly="readonly" />
+            <input type="submit" value="Post answer" />
+        </form>
+    </div>
+    <h2>Answers</h2>
+    <div class="answers" id="id_answers">
+        {% for answer in answers %}
+            <div class="answer">
+                <h4>Answer</h4>
+                <p>{{ answer.answer.content }}</p>
+                <p>Answered by: {{ answer.answer.user }} - {{ answer.answer.created_at }}</p>
+                <p>Total votes: <span id="answer_vote_total_{{ answer.answer.id }}">{{ answer.answer.num_votes }}</span></p>
+                <div class="accept">
+                    {% if user == question.question.user %}
+                        <form class="accept__form{% if answer.answer.accepted %}--accepted{% endif %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="answer_id" value="{{ answer.answer.id }}" readonly="readonly">
+                            <input type="hidden" name="form_url" value="{% url 'answers:toggle_accept' %}" readonly="readonly">
+                            <input type="submit" name="submit" value="{% if answer.answer.accepted %}Unaccept answer{% else %}Accept answer{% endif %}" />
+                        </form>
+                    {% endif %}
+                </div>
+                {% if answer.answer.user != user %}
+                    <section class="vote">
+                        <form class="vote_form">
+                            {% csrf_token %}
+                            <input type="hidden" name="object_id" value="{{ answer.answer.id }}" readonly="readonly">
+                            <input type="hidden" name="vote_type" value="answer" readonly="readonly">
+                            <input type="hidden" name="form_url"
+                            value="{% if answer.answer.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
+                            <input type="hidden" name="operation" value="{% if answer.answer.voted %}-1{% else %}1{% endif %}" />
+                            <input type="submit" name="submit"
+                            value="{% if answer.answer.voted %}Remove my up vote{% else %}Up vote this answer{% endif %}" />
+                        </form>
+                    </section>
+                {% endif %}
+            </div>
+            <div class="comments">
+                <h4>Answer Comments:</h4>
+                {% for comment in answer.comments %}
+                    <div class="comment">
+                        <p>{{ comment.content }}</p>
+                        <p>Commented by: {{ comment.commenter }} - {{ comment.created_at }}</p>
+                        <p>Total votes: <span id="comment_vote_total_{{ comment.id }}">{{ comment.num_votes }}</span></p>
+                        {% if comment.commenter != user %}
+                            <section class="vote">
+                                <form class="vote_form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="object_id" value="{{ comment.id }}" readonly="readonly">
+                                    <input type="hidden" name="vote_type" value="comment" readonly="readonly">
+                                    <input type="hidden" name="form_url"
+                                    value="{% if comment.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
+                                    <input type="hidden" name="operation" value="{% if comment.voted %}-1{% else %}1{% endif %}" />
+                                    <input type="submit" name="submit"
+                                    value="{% if comment.voted %}Remove my up vote{% else %}Up vote this comment{% endif %}" />
+                                </form>
+                            </section>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="create_comment">
+                <a href="#" class="display_comment_form">Comment on this answer</a>
+                <form class="comment_form" hidden>
+                    {% csrf_token %}
+                    <input type="hidden" name="object_id" value="{{ answer.answer.id }}" readonly="readonly" />
+                    <textarea name="content" cols="40" rows="10" required=""></textarea>
+                    <input type="hidden" name="comment_type" value="answer" readonly="readonly" />
+                    <input type="submit" value="Post comment" />
+                </form>
+            </div>
+            <hr />
+        {% endfor %}
     </div>
 {% endblock body %}
 {% block bottom_body %}
     <script>
         var comment_url = "{% url 'comments:create_comment' %}",
-            login_redirect_url = "{% url 'account:login' %}?next={{ question.question.get_absolute_url }}",
             user_authenticated = "{{ user.is_authenticated }}";
     </script>
     <script src="{% static 'questions/js/ajax_handler.js' %}"></script>
