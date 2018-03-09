@@ -15,7 +15,7 @@ from votes.forms import VoteForm
 class HomePage(ListView):
 
     model = Question
-    queryset = Question.objects.select_related('user').order_by('-created_at')[:30]
+    queryset = Question.objects.prefetch_related('votes', 'tags', 'answer_set').select_related('user').order_by('-created_at')[:30]
     template_name = 'questions/index.html'
     paginate_by = 5
 
