@@ -1,5 +1,11 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
+    {% if tagged_by %}
+        <div class="tagged-by">
+            <div class="tagged-by__heading">Questions tagged with: </div>
+            <div class="tagged-by__tag">{{ tagged_by }}</div>
+        </div>
+    {% endif %}
     <div class="questions">
         {% for question in object_list %}
             <div class="question">
