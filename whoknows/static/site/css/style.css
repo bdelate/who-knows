@@ -1,1 +1,73 @@
-*{margin:0;padding:0}
+* {
+  margin: 0;
+  padding: 0; }
+
+html {
+  font-size: 10px; }
+
+body {
+  box-sizing: border-box; }
+
+a:link, a:visited {
+  text-decoration: none;
+  color: #06375f; }
+
+.nav {
+  font-size: 1.5rem;
+  height: 7rem;
+  background-color: #06375f;
+  display: flex;
+  justify-content: space-around;
+  align-items: center; }
+  .nav a:link, .nav a:visited {
+    color: #fff; }
+
+.questions {
+  margin: 2rem 10vw; }
+
+.question {
+  display: flex;
+  font-size: 1.5rem;
+  border-top: 1px solid #7d827f;
+  margin: 1rem;
+  padding: 1rem; }
+  .question:last-child {
+    border-bottom: 1px solid #7d827f; }
+  .question__stat {
+    text-align: center;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 0.6rem;
+    border: 1px solid #06375f; }
+  .question__detail {
+    padding-left: 2rem; }
+  .question__title {
+    font-size: 2rem; }
+  .question__meta {
+    display: flex; }
+  .question__tags {
+    display: flex; }
+  .question__tags--tag {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    background-color: #06375f; }
+    .question__tags--tag:first-child {
+      margin-left: 0; }
+    .question__tags--tag > a:link, .question__tags--tag > a:visited {
+      color: #fff; }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  font-size: 1.5rem; }
+  .pagination a:link, .pagination a:visited {
+    color: #fff; }
+  .pagination__link {
+    background-color: #06375f;
+    margin: 0.5rem;
+    padding: 0.5rem; }
+  .pagination__link--current {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    background-color: #fff;
+    border: 1px solid #06375f; }

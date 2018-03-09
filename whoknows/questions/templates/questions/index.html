@@ -1,32 +1,65 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
-    <h2>Home Page</h2>
-    <ul>
+    <div class="questions">
         {% for question in object_list %}
-            <li><a href="{{ question.get_absolute_url }}">{{ question.title }}</a> : {{ question.created_at }} (Asked by: {{ question.user }})</li>
+            <div class="question">
+                <div class="question__stat">
+                    <div>{{ question.votes.count }}</div>
+                    <div>Votes</div>
+                </div>
+                <div class="question__stat">
+                    <div>{{ question.answer_set.count }}</div>
+                    <div>Answers</div>
+                </div>
+                <div class="question__stat">
+                    <div>2</div>
+                    <div>Views</div>
+                </div>
+                <div class="question__detail">
+                    <div class="question__title">
+                        <a href="{{ question.get_absolute_url }}">{{ question.title }}</a>
+                    </div>
+                    <div class="question__meta">
+                        <div class="question__tags">
+                            {% for tag in question.tags.all %}
+                                <div class="question__tags--tag">
+                                    <a href="{% url 'questions:tagged_questions' slug=tag.slug %}">{{ tag.name }}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="question__user">
+                        Asked on: {{ question.created_at }} | Asked by: {{ question.user }}
+                    </div>
+                </div>
+            </div>
         {% empty %}
-            <li>No Questions yet. Ask a question <a href="{% url 'questions:create' %}">here</a></li>
+            <span>
+                No Questions yet. Ask a question <a href="{% url 'questions:create' %}">here</a>
+            </span>
         {% endfor %}
-    </ul>
+    </div>
     {% if is_paginated %}
-        <ul>
+        <div class="pagination">
             {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-            {% else %}
-                <li><span>&laquo;</span></li>
+                <div class="pagination__link">
+                    <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                </div>
             {% endif %}
             {% for i in paginator.page_range %}
                 {% if page_obj.number == i %}
-                    <li><span>{{ i }} <span>(current)</span></span></li>
+                    <div class="pagination__link--current">{{ i }}</div>
                 {% else %}
-                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    <div class="pagination__link">
+                        <a href="?page={{ i }}">{{ i }}</a>
+                    </div>
                 {% endif %}
             {% endfor %}
             {% if page_obj.has_next %}
-                <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-            {% else %}
-                <li><span>&raquo;</span></li>
+                <div class="pagination__link">
+                    <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                </div>
             {% endif %}
-        </ul>
+        </div>
     {% endif %}
 {% endblock body %}

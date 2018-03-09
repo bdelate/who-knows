@@ -1,0 +1,82 @@
+.questions {
+    margin: 2rem 10vw;
+}
+
+.question {
+    display: flex;
+    font-size: 1.5rem;
+    border-top: 1px solid $color-grey;
+    margin: 1rem;
+    padding: 1rem;
+
+    &:last-child {
+        border-bottom: 1px solid $color-grey;
+    }
+
+    &__stat {
+        text-align: center;
+        margin: 1rem;
+        padding: 1rem;
+        border-radius: 0.6rem;
+        border: 1px solid $color-blue;
+    }
+
+    &__detail {
+        padding-left: 2rem;
+    }
+
+    &__title {
+        font-size: 2rem;
+    }
+
+    &__meta {
+        display: flex;
+    }
+
+    &__tags {
+        display: flex;
+    }
+
+    &__tags--tag {
+        margin: 0.5rem;
+        padding: 0.5rem;
+        background-color: $color-blue;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        & > a {
+            &:link,
+            &:visited {
+                color: #fff;
+            }
+        }
+    }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+
+    & a {
+        &:link,
+        &:visited {
+            color: #fff;
+        }
+    }
+
+    &__link {
+        background-color: $color-blue;
+        margin: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    &__link--current {
+        margin: 0.5rem;
+        padding: 0.5rem;
+        background-color: #fff;
+        border: 1px solid $color-blue;
+    }
+}
