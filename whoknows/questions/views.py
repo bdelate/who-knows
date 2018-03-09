@@ -57,6 +57,9 @@ class QuestionDetail(DetailView):
         question_query = Question.objects.select_related('user').annotate(num_votes=Count('votes'),
                                                                           voted=Exists(voted_for_question))
         question = get_object_or_404(question_query, slug=kwargs['slug'])
+        question.num_views += 1
+        question.save()
+
         context = {'vote_form': VoteForm(),
                    'answer_form': AnswerForm(initial={'question': question, 'user': self.request.user}, prefix='answer'),
                    'question': {'question': question, 'comments': []},
