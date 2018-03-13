@@ -1,0 +1,49 @@
+.tags {
+    display: flex;
+
+    &__tag {
+        margin: 0.5rem;
+        padding: 0.5rem;
+        background-color: $color-blue;
+        border-radius: 0.6rem;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        & > a {
+            &:link,
+            &:visited {
+                color: #fff;
+            }
+        }
+    }
+}
+
+.stat {
+    text-align: center;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 0.6rem;
+    border: 1px solid $color-blue;
+}
+
+.btn {
+    border: 0;
+    border-radius: 0.6rem;
+    padding: 0.5rem;
+    background-color: $color-blue;
+    color: #fff;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &__up {
+        background-color: $color-green;
+    }
+
+    &__down {
+        background-color: $color-red;
+    }
+}

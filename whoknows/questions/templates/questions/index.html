@@ -6,35 +6,33 @@
             <div class="tagged-by__tag">{{ tagged_by }}</div>
         </div>
     {% endif %}
-    <div class="questions">
+    <div class="question-list">
         {% for question in object_list %}
-            <div class="question">
-                <div class="question__stat">
+            <div class="question-list__question">
+                <div class="stat">
                     <div>{{ question.votes.count }}</div>
                     <div>Votes</div>
                 </div>
-                <div class="question__stat">
+                <div class="stat">
                     <div>{{ question.answer_set.count }}</div>
                     <div>Answers</div>
                 </div>
-                <div class="question__stat">
+                <div class="stat">
                     <div>{{ question.num_views }}</div>
                     <div>Views</div>
                 </div>
-                <div class="question__detail">
-                    <div class="question__title">
+                <div class="question-list__question--detail">
+                    <div class="question-list__question--title">
                         <a href="{{ question.get_absolute_url }}">{{ question.title }}</a>
                     </div>
-                    <div class="question__meta">
-                        <div class="question__tags">
-                            {% for tag in question.tags.all %}
-                                <div class="question__tags--tag">
-                                    <a href="{% url 'questions:tagged_questions' slug=tag.slug %}">{{ tag.name }}</a>
-                                </div>
-                            {% endfor %}
-                        </div>
+                    <div class="tags">
+                        {% for tag in question.tags.all %}
+                            <div class="tags__tag">
+                                <a href="{% url 'questions:tagged_questions' slug=tag.slug %}">{{ tag.name }}</a>
+                            </div>
+                        {% endfor %}
                     </div>
-                    <div class="question__user">
+                    <div class="question-list__question--user">
                         Asked on: {{ question.created_at }} | Asked by: {{ question.user }}
                     </div>
                 </div>
