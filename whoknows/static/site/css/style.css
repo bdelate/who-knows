@@ -21,7 +21,8 @@ hr {
   position: relative; }
 
 .tags {
-  display: flex; }
+  display: flex;
+  flex-wrap: wrap; }
   .tags__tag {
     margin: 0.5rem;
     padding: 0.5rem;
@@ -172,3 +173,8 @@ hr {
     padding: 0.5rem;
     background-color: #fff;
     border: 1px solid #06375f; }
+
+.title {
+  text-align: center;
+  border-bottom: 1px solid #7d827f;
+  margin-bottom: 2rem; }
