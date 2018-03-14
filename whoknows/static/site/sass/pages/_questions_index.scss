@@ -1,5 +1,4 @@
 .tagged-by {
-    margin: 2rem 10vw;
     padding: 1rem;
     display: flex;
     align-items: center;
@@ -14,10 +13,6 @@
         color: #fff;
         background-color: $color-blue;
     }
-}
-
-.question-list {
-    margin: 2rem 10vw;
 }
 
 .question-list__question {

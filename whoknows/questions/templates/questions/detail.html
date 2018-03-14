@@ -1,12 +1,6 @@
 {% extends parent_template|default:"base.html" %}
 {% load staticfiles %}
 {% block body %}
-    <div id="id_login_redirect" hidden>
-        <span>
-            You need to login / signup before doing this.
-            You can login / signup <a href="{% url 'account:login' %}?next={{ question.question.get_absolute_url }}">here</a>
-        </span>
-    </div>
     <div class="page-margin">
         <div class="question-title">
             <h1>{{ question.question.title }}</h1>
@@ -67,7 +61,7 @@
                                     {% endif %}
                                 </div>
                                 <div>
-                                    <p>{{ comment.content }}</p>
+                                    <p>{{ comment.content }}</p><hr />
                                     <p>Commented by: {{ comment.commenter }} - {{ comment.created_at }}</p>
                                 </div>
                             </div>
@@ -151,7 +145,7 @@
                                             {% endif %}
                                         </div>
                                         <div>
-                                            <p>{{ comment.content }}</p>
+                                            <p>{{ comment.content }}</p><hr />
                                             <p>Commented by: {{ comment.commenter }} - {{ comment.created_at }}</p>
                                         </div>
                                     </div>

@@ -1,8 +1,9 @@
 var xhr = new XMLHttpRequest(),
-    id_login_redirect = document.getElementById('id_login_redirect'),
     id_answer_form = document.getElementById('id_answer_form'),
     id_display_answer_form = document.getElementById('id_display_answer_form')
-    id_answers = document.getElementById('id_answers');
+    id_answers = document.getElementById('id_answers'),
+    feedbackContainer = document.getElementById('feedback-container'),
+    id_feedback = document.getElementById('id_feedback');
 
 function submit_vote_form(e) {
     e.preventDefault();
@@ -18,7 +19,8 @@ function submit_vote_form(e) {
         vote_total_element = document.getElementById(vote_type + "_vote_total_" + object_id)
         vote_total_element.innerText = parseInt(vote_total_element.innerText) + parseInt(operation);
     } else {
-        id_login_redirect.removeAttribute('hidden');
+        id_feedback.innerHTML = '&times;  To do this you need to login or signup'
+        feedbackContainer.style.display = 'block';
     }
 }
 
@@ -120,14 +122,16 @@ function toggle_accepted_answer(e) {
 // ajax response received
 xhr.onload = function() {
     var responseObject = JSON.parse(xhr.responseText);
-    document.getElementById('id_feedback').innerHTML = responseObject['response'];
+    id_feedback.innerHTML = '&times;  ' + responseObject['response'];
+    feedbackContainer.style.display = 'block';
     if (xhr.status == 200) {
         if (responseObject['type'] == 'answer') {
             display_new_answer(document.getElementById("id_answer-content").value)
         }
     } else if (xhr.status == 400) {
         if (responseObject['response'] == 'login required') {
-            id_login_redirect.removeAttribute('hidden');
+            id_feedback.innerHTML = '&times;  To do this you need to login or signup'
+            feedbackContainer.style.display = 'block';
         }
     }
 }
@@ -157,7 +161,8 @@ for (var i=0; i<display_comment_form_links.length; i++) {
             comment_form.removeAttribute('hidden');
             comment_form.content.value = '';
         } else {
-            id_login_redirect.removeAttribute('hidden');
+            id_feedback.innerHTML = '&times;  To do this you need to login or signup'
+            feedbackContainer.style.display = 'block';
         }
     });
 }
@@ -175,6 +180,12 @@ id_display_answer_form.addEventListener('click', function(e) {
         id_answer_form.removeAttribute('hidden');
         id_answer_form.scrollIntoView();
     } else {
-        id_login_redirect.removeAttribute('hidden');
+        id_feedback.innerHTML = '&times;  To do this you need to login or signup'
+        feedbackContainer.style.display = 'block';
     }
+});
+
+// hide feedback section when id_feedback is clicked
+id_feedback.addEventListener('click', function(e) {
+    feedbackContainer.style.display = 'none';
 });
