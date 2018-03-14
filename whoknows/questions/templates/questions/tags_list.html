@@ -1,11 +1,15 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
-    <h2>Tags</h2>
-    <ul>
+    <div class="title">
+        <h1>Existing Tags</h1>
+    </div>
+    <div class="tags">
         {% for tag in object_list %}
-            <li><a href="{% url 'questions:tagged_questions' slug=tag.slug %}">{{ tag.name }}</a></li>
+            <div class="tags__tag">
+                <a href="{% url 'questions:tagged_questions' slug=tag.slug %}">{{ tag.name }}</a>
+            </div>
         {% empty %}
-            <li>No tags created yet</li>
+            No tags created yet
         {% endfor %}
-    </ul>
+    </div>
 {% endblock body %}

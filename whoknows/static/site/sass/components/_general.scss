@@ -1,5 +1,6 @@
 .tags {
     display: flex;
+    flex-wrap: wrap;
 
     &__tag {
         margin: 0.5rem;
