@@ -37,8 +37,12 @@
                 {% endif %}
             </nav>
         </header>
-        <span id="id_feedback"></span>
-        {% block body %}{% endblock body %}
-        {% block bottom_body %}{% endblock bottom_body %}
+        <div class="container">
+            <div id="feedback-container">
+                <span id="id_feedback">you have to log in</span>
+            </div>
+            {% block body %}{% endblock body %}
+            {% block bottom_body %}{% endblock bottom_body %}
+        </div>
     </body>
 </html>

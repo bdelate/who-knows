@@ -1,0 +1,77 @@
+.tags {
+    display: flex;
+
+    &__tag {
+        margin: 0.5rem;
+        padding: 0.5rem;
+        background-color: $color-blue;
+        border-radius: 0.6rem;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        & > a {
+            &:link,
+            &:visited {
+                color: #fff;
+            }
+        }
+    }
+}
+
+.stat {
+    text-align: center;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 0.6rem;
+    border: 1px solid $color-blue;
+}
+
+.btn {
+    border: 0;
+    border-radius: 0.6rem;
+    padding: 0.5rem;
+    background-color: $color-blue;
+    color: #fff;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &__up {
+        background-color: $color-green;
+    }
+
+    &__down {
+        background-color: $color-red;
+    }
+}
+
+#feedback-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(#000, 0.7);
+    display: none;
+    z-index: 100;
+}
+
+#id_feedback {
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%);
+    border-radius: 0.6rem;
+    padding: 1rem;
+    background-color: $color-light-blue;
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: bold;
+
+    &:hover {
+        cursor: pointer;
+    }
+}

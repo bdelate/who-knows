@@ -4,7 +4,7 @@
 }
 
 html {
-    font-size: 10px;
+    font-size: 15px;
 }
 
 body {
@@ -17,4 +17,14 @@ a {
         text-decoration: none;
         color: $color-blue;
     }
+}
+
+hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.container {
+    margin: 2rem 10vw;
+    position: relative;
 }

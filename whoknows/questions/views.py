@@ -67,8 +67,10 @@ class QuestionDetail(DetailView):
 
         # get the comments for the question
         voted_for_comment = Comment.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
-        comment_query = question.comments.prefetch_related('commenter').annotate(num_votes=Count('votes'),
-                                                                                 voted=Exists(voted_for_comment))
+        comment_query = question.comments.prefetch_related('commenter') \
+                                         .annotate(num_votes=Count('votes'),
+                                                   voted=Exists(voted_for_comment)) \
+                                         .order_by('created_at')
         for comment in comment_query:
             context['question']['comments'].append(comment)
 
@@ -77,12 +79,14 @@ class QuestionDetail(DetailView):
         answers = Answer.objects.prefetch_related('user').filter(question=question) \
                                                          .annotate(num_votes=Count('votes'),
                                                                    voted=Exists(voted_for_answer)) \
-                                                         .order_by('-accepted', '-created_at')
+                                                         .order_by('-accepted', '-num_votes', '-created_at')
         for answer in answers:
             comments = []
             # get the comments for each answer
-            comment_query = answer.comments.prefetch_related('commenter').annotate(num_votes=Count('votes'),
-                                                                                   voted=Exists(voted_for_comment))
+            comment_query = answer.comments.prefetch_related('commenter') \
+                                           .annotate(num_votes=Count('votes'),
+                                                     voted=Exists(voted_for_comment)) \
+                                           .order_by('created_at')
             for comment in comment_query:
                 comments.append(comment)
             # append this answer along with all its comments to context
