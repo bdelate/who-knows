@@ -14,4 +14,6 @@ class TagForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['tags'] = forms.MultipleChoiceField(choices=Tag.objects.values_list('slug', 'name'))
+        self.fields['tags'] = forms.MultipleChoiceField(choices=Tag.objects.values_list('slug', 'name'),
+                                                        widget=forms.SelectMultiple(attrs={'class': 'input select',
+                                                                                           'size': 8}))
