@@ -76,3 +76,21 @@
         cursor: pointer;
     }
 }
+
+.horizontal-center {
+    display: flex;
+    justify-content: center;
+}
+
+.input {
+    display: block;
+    border: 1px solid $color-grey;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border-radius: 0.6rem;
+
+    &:focus {
+        outline: none;
+        border: 1px solid $color-light-blue;
+    }
+}
