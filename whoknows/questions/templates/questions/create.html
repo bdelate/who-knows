@@ -1,11 +1,22 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
-  <h2>Ask a questoin</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ question_form.as_p }}
-    {{ tag_form.as_p }}
-    <button type="submit">Ask Question</button>
-  </form>
-  {{ form.as_p }}
+    <div class="title">
+        <h1>Ask a question</h1>
+    </div>
+    <div class="horizontal-center">
+        <form method="post">
+            {% csrf_token %}
+            <input class="input" type="text" name="title" maxlength="256" required="" id="id_title" placeholder="Title">
+            <textarea class="input" name="content" cols="40" rows="10" required="" id="id_content" placeholder="What is your question?"></textarea>
+            <div class="horizontal-center">
+                <h3>Select one or more tags</h3>
+            </div>
+            <div class="horizontal-center">
+                {{ tag_form.tags }}
+            </div>
+            <div class="horizontal-center">
+                <input type="submit" value="Post Question" class="btn" />
+            </div>
+        </form>
+    </div>
 {% endblock body %}
