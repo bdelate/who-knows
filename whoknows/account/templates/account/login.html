@@ -1,12 +1,31 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
-  <h2>Log In</h2>
-  <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Log In</button>
-  </form>
-  <p>
-      New users can <a href="{% url 'account:create' %}">Sign Up here</a>
-  </p>
+    <div class="title">
+        <h1>Log in</h1>
+    </div>
+    <div class="horizontal-center">
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <strong>{{ error|escape }}</strong>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <strong>{{ error|escape }}</strong>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="horizontal-center">
+        <form method="post">
+            {% csrf_token %}
+            <input class="input" type="text" name="username" autofocus="" maxlength="254" required="" id="id_username" placeholder="Username">
+            <input class="input" type="password" name="password" required="" id="id_password" placeholder="Password">
+            <div class="horizontal-center">
+                <input type="submit" value="Log in" class="btn" />
+            </div>
+        </form>
+    </div>
+    <div class="horizontal-center">
+        <span><br />New users can<a href="{% url 'account:create' %}">&nbsp;Sign Up here</a></span>
+    </div>
 {% endblock body %}
