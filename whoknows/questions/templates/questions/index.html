@@ -1,9 +1,15 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
     {% if tagged_by %}
-        <div class="tagged-by">
-            <div class="tagged-by__heading">Questions tagged with: </div>
-            <div class="tagged-by__tag">{{ tagged_by }}</div>
+        <div class="filter-results">
+            <div class="filter-results__heading">Questions tagged with: </div>
+            <div class="filter-results__result">{{ tagged_by }}</div>
+        </div>
+    {% endif %}
+    {% if query_string %}
+        <div class="filter-results">
+            <div class="filter-results__heading">Questions (Title or Content) containing the phrase: </div>
+            <div class="filter-results__result">{{ query_string }}</div>
         </div>
     {% endif %}
     <div class="question-list">

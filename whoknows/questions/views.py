@@ -4,9 +4,8 @@ from django.views.generic import TemplateView, DetailView, ListView
 from comments.models import Comment
 from answers.models import Answer
 from .models import Question, Tag
-from django.db.models import Count
-from django.db.models import Exists, OuterRef
-from .forms import QuestionForm, TagForm
+from django.db.models import Count, Exists, OuterRef, Q
+from .forms import QuestionForm, TagForm, SearchForm
 from answers.forms import AnswerForm
 from django.shortcuts import redirect, render
 from votes.forms import VoteForm
@@ -114,3 +113,26 @@ class TaggedQuestionList(ListView):
         tag = self.kwargs['slug'].replace('-', ' ')
         kwargs['tagged_by'] = tag
         return super().get_context_data(**kwargs)
+
+
+class QuestionSearch(ListView):
+
+    template_name = 'questions/index.html'
+    paginate_by = 5
+    form_class = SearchForm
+
+    def post(self, request, *args, **kwargs):
+        search_form = self.form_class(self.request.POST)
+        if search_form.is_valid():
+            query_string = search_form.cleaned_data['search']
+            self.object_list = Question.objects.filter(Q(title__icontains=query_string) |
+                                                       Q(content__icontains=query_string)).order_by('-created_at')
+            context = self.get_context_data(object_list=self.object_list, query_string=query_string, **kwargs)
+        else:
+            self.object_list = []
+            context = super().get_context_data(**kwargs)
+        return super().render_to_response(context=context, **kwargs)
+
+    def get_context_data(self, object_list, query_string, **kwargs):
+        kwargs['query_string'] = query_string
+        return super().get_context_data(object_list=self.object_list, **kwargs)

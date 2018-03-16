@@ -17,3 +17,8 @@ class TagForm(forms.Form):
         self.fields['tags'] = forms.MultipleChoiceField(choices=Tag.objects.values_list('slug', 'name'),
                                                         widget=forms.SelectMultiple(attrs={'class': 'input select',
                                                                                            'size': 8}))
+
+
+class SearchForm(forms.Form):
+
+    search = forms.CharField()

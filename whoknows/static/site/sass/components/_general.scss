@@ -133,3 +133,20 @@ h1 {
 ul {
     margin: 1rem;
 }
+
+.filter-results {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+
+    &__heading {
+        font-size: 1.3rem;
+    }
+
+    &__result {
+        margin: 0.5rem;
+        padding: 0.5rem;
+        color: #fff;
+        background-color: $color-blue;
+    }
+}

@@ -21,7 +21,10 @@
                     <a href="{% url 'questions:tags_list' %}">Tags</a>
                 </div>
                 <div class="nav-item">
-                    <input class="input search" type="text" name="search" placeholder="Search..." />
+                    <form action="{% url 'questions:search' %}" method="post">
+                        {% csrf_token %}
+                        <input class="input search" type="text" name="search" placeholder="Search..." />
+                    </form>
                 </div>
                 {% if user.is_authenticated %}
                     <div class="nav-item">
