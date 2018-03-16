@@ -4,6 +4,28 @@
         <h1>Ask a question</h1>
     </div>
     <div class="horizontal-center">
+        {% if question_form.errors %}
+            {% for field in question_form %}
+                {% for error in field.errors %}
+                    <strong>{{ error|escape }}</strong>
+                {% endfor %}
+            {% endfor %}
+            {% for error in question_form.non_field_errors %}
+                <strong>{{ error|escape }}</strong>
+            {% endfor %}
+        {% endif %}
+        {% if tag_form.errors %}
+            {% for field in tag_form %}
+                {% for error in field.errors %}
+                    <strong>{{ error|escape }}</strong>
+                {% endfor %}
+            {% endfor %}
+            {% for error in tag_form.non_field_errors %}
+                <strong>{{ error|escape }}</strong>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="horizontal-center">
         <form method="post">
             {% csrf_token %}
             <input class="input" type="text" name="title" maxlength="256" required="" id="id_title" placeholder="Title">

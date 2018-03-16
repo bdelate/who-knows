@@ -98,20 +98,22 @@ class AnswerTest(BaseTestMixins, TestCase):
 
     def test_only_question_initiator_can_accept_answer(self):
         self.client.post(reverse('account:login'), self.second_user_credentials)
-        response = self.client.post(reverse('answers:toggle_accept'), data={'answer_id': 1})
+        answer = Answer.objects.first()
+        response = self.client.post(reverse('answers:toggle_accept'), data={'answer_id': answer.id})
         response_message = response.json()['response']
         self.assertEqual(response.status_code, 400)
         self.assertIn('Invalid user', response_message)
-        answer = Answer.objects.first()
+        answer.refresh_from_db()
         self.assertEqual(answer.accepted, False)
 
     def test_accept_answer(self):
         self.client.post(reverse('account:login'), self.credentials)
-        response = self.client.post(reverse('answers:toggle_accept'), data={'answer_id': 1})
+        answer = Answer.objects.first()
+        response = self.client.post(reverse('answers:toggle_accept'), data={'answer_id': answer.id})
         response_message = response.json()['response']
         self.assertEqual(response.status_code, 200)
         self.assertIn('Accepted answer toggled', response_message)
-        answer = Answer.objects.first()
+        answer.refresh_from_db()
         self.assertEqual(answer.accepted, True)
 
     def test_cannot_accept_multiple_answers(self):
@@ -123,13 +125,15 @@ class AnswerTest(BaseTestMixins, TestCase):
 
         # login with first user and accept first answer
         self.client.post(reverse('account:login'), self.credentials)
-        self.client.post(reverse('answers:toggle_accept'), data={'answer_id': 1})
-        first_answer = Answer.objects.first()
+        first_answer = question.answer_set.first()
+        self.client.post(reverse('answers:toggle_accept'), data={'answer_id': first_answer.id})
+        first_answer.refresh_from_db()
         self.assertEqual(first_answer.accepted, True)
 
         # accept the second answer and confirm that only one answer in total is accepted
-        self.client.post(reverse('answers:toggle_accept'), data={'answer_id': 2})
-        second_answer = Answer.objects.last()
+        second_answer = question.answer_set.last()
+        self.client.post(reverse('answers:toggle_accept'), data={'answer_id': second_answer.id})
+        second_answer.refresh_from_db()
         self.assertEqual(second_answer.accepted, True)
         num_accepted_answers = Answer.objects.filter(question=question, accepted=True).count()
         self.assertEqual(num_accepted_answers, 1)
