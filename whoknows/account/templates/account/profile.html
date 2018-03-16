@@ -17,9 +17,12 @@
         <h3>Votes Received</h3>
     </div>
     <div>
-        Up votes recieved for my questions: {{ question_votes_received }}<br />
-        Up votes recieved for my comments: {{ comment_votes_received }}<br />
-        Up votes recieved for my answers: {{ answer_votes_received }}
+        <b>Up votes recieved for my:</b>
+        <ul>
+            <li>Questions: {{ question_votes_received }}</li>
+            <li>Comments: {{ comment_votes_received }}</li>
+            <li>Answers: {{ answer_votes_received }}</li>
+        </ul>
     </div>
     <div class="title section">
         <h3>My 5 most recent questions</h3>
