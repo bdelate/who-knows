@@ -28,3 +28,8 @@ hr {
     margin: 2rem 10vw;
     position: relative;
 }
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}

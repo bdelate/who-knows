@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile
 from votes.models import Vote
 from questions.models import Question
+from answers.models import Answer
 
 
 class AccountCreate(CreateView):
@@ -37,6 +38,7 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
         kwargs['comment_votes_received'] = Vote.objects.filter(comments__commenter=self.request.user).count()
         kwargs['answer_votes_received'] = Vote.objects.filter(answers__user=self.request.user).count()
         kwargs['latest_questions'] = Question.objects.filter(user=self.request.user).order_by('-created_at')[:5]
+        kwargs['latest_answers'] = Answer.objects.prefetch_related('question').filter(user=self.request.user).order_by('-created_at')[:5]
         return super().get_context_data(**kwargs)
 
 
@@ -47,3 +49,12 @@ class UserQuestionList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Question.objects.filter(user=self.request.user).order_by('-created_at')
+
+
+class UserAnswerList(LoginRequiredMixin, ListView):
+
+    template_name = 'questions/index.html'
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Question.objects.prefetch_related('answer_set').filter(answer__user=self.request.user).order_by('-created_at')
