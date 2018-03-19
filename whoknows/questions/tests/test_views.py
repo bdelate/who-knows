@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib import auth
-from questions.models import Tag
+from questions.models import Tag, Question
 from tests.mixins import BaseTestMixins
+from django.contrib.auth import get_user_model
 
 
 class QuestionCreateAndDetailTest(TestCase, BaseTestMixins):
@@ -99,3 +100,33 @@ class TagTest(TestCase, BaseTestMixins):
     def test_invalid_tag_displays_404(self):
         response = self.client.get(reverse('questions:tagged_questions', args=['invalid tag']))
         self.assertEqual(response.status_code, 404)
+
+
+class QuestionHomeSearchTest(TestCase, BaseTestMixins):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        User = get_user_model()
+        credentials = {'username': 'john', 'password': 'p@ssw0rd'}
+        user = User.objects.create_user(**credentials)
+        Question.objects.create(user=user, title='unique title (find this)', content='content for first question')
+        Question.objects.create(user=user, title='this is the title', content='content for second question (find this)')
+
+    def test_search_title_and_content(self):
+        """
+        Ensure results are based on searching both the question title and content
+        """
+        response = self.client.post(reverse('questions:search'),
+                                    {'search': 'find this'})
+        self.assertEqual(response.status_code, 200)
+        results = response.context['question_list']
+        self.assertEqual(results.count(), 2)
+
+    def test_no_results(self):
+        response = self.client.post(reverse('questions:search'),
+                                    {'search': 'this will not return any results'})
+        self.assertEqual(response.status_code, 200)
+        results = response.context['question_list']
+        self.assertEqual(results.count(), 0)
+        self.assertContains(response, 'No Questions yet')
