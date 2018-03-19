@@ -20,6 +20,10 @@ hr {
   margin: 2rem 10vw;
   position: relative; }
 
+.row {
+  display: flex;
+  justify-content: space-between; }
+
 h1 {
   font-size: 1.3rem;
   font-weight: bold; }
