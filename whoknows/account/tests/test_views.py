@@ -13,6 +13,18 @@ class ProfileTest(BaseTestMixins, TestCase):
         super().setUpClass()
         cls.create_test_data()
 
+    def test_unauth_profile_redirects_to_login(self):
+        response = self.client.get(reverse('account:profile'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('account:login'))
+
+    def test_unauth_user_can_view_public_profile(self):
+        response = self.client.get(reverse('account:profile', kwargs={'username': 'john'}))
+        self.assertFalse(response.context['user'].is_authenticated)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, 'first question')
+        self.assertTrue('submit' not in response)  # ensure the submit button is not present
+
     def test_update_profile(self):
         response = self.client.post(reverse('account:login'), self.credentials, follow=True)
         self.assertTemplateUsed(response, 'account/profile.html')

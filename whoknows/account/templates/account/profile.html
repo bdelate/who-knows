@@ -1,17 +1,19 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
     <div class="title">
-        <h1>User Profile: {{ user }}</h1>
+        <h1>User Profile: {{ profile_user }}</h1>
     </div>
     <div class="row">
         <div class="horizontal-center">
             <form method="post">
                 {% csrf_token %}
-                <textarea class="input" name="about" cols="40" rows="10" required=""
+                <textarea class="input" name="about" cols="40" rows="10" required="" {% if profile_user != user %}readonly{% endif %}
                 id="id_about" placeholder="Tell people something about you...">{{ form.about.value }}</textarea>
-                <div class="horizontal-center">
-                    <input type="submit" value="Update" class="btn" />
-                </div>
+                {% if profile_user == user %}
+                    <div class="horizontal-center">
+                        <input type="submit" value="Update" class="btn" />
+                    </div>
+                {% endif  %}
             </form>
         </div>
         <div>
@@ -43,7 +45,7 @@
                     {% endfor %}
                 </ul>
                 {% if latest_questions.count > 0 %}
-                    View all my questions <a href="{% url 'account:user_questions' %}">here</a>
+                    View all my questions <a class="bold" href="{% url 'account:user_questions' %}">here</a>
                 {% endif %}
             </div>
         </div>
@@ -58,7 +60,7 @@
                     {% endfor %}
                 </ul>
                 {% if latest_questions.count > 0 %}
-                    View all the questions that I have answered <a href="{% url 'account:user_answers' %}">here</a>
+                    View all the questions that I have answered <a class="bold" href="{% url 'account:user_answers' %}">here</a>
                 {% endif %}
             </div>
         </div>

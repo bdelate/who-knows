@@ -11,6 +11,8 @@ body {
 a:link, a:visited {
   text-decoration: none;
   color: #06375f; }
+  a:link.bold, a:visited.bold {
+    font-weight: bold; }
 
 hr {
   margin-top: 1rem;

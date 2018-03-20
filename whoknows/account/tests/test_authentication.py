@@ -21,12 +21,6 @@ class UserAuthFlowTest(TestCase):
         self.assertRedirects(response, reverse('account:profile'))
         self.assertTrue(response.context['user'].is_authenticated)
 
-    def test_unauth_user_account_redirects_to_login(self):
-        response = self.client.post(reverse('account:profile'))
-        self.assertEqual(response.status_code, 302)
-        url = reverse('account:login') + '?next=/account/'
-        self.assertRedirects(response, url)
-
     def test_logout_redirects_to_home(self):
         self.client.post(reverse('account:login'), self.credentials, follow=True)
         response = self.client.post(reverse('account:logout'))
