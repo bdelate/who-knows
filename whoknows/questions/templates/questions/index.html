@@ -39,7 +39,7 @@
                         {% endfor %}
                     </div>
                     <div class="question-list__question--user">
-                        Asked on: {{ question.created_at }} | Asked by: {{ question.user }}
+                        Asked on: {{ question.created_at }} | Asked by: <a class="bold" href="{% url 'account:profile' username=question.user %}">{{ question.user }}</a>
                     </div>
                 </div>
             </div>

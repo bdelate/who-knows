@@ -35,7 +35,7 @@
                         {% endfor %}
                     </div>
                     <div class="user">
-                        Asked on: {{ question.question.created_at }} | Asked by: {{ question.question.user }}
+                        Asked on: {{ question.question.created_at }} | Asked by: <a class="bold" href="{% url 'account:profile' username=question.question.user %}">{{ question.question.user }}</a>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                             </div>
                             <div>
                                 <p>{{ comment.content }}</p><hr />
-                                <p>Commented by: {{ comment.commenter }} - {{ comment.created_at }}</p>
+                                <p>Commented by: <a class="bold" href="{% url 'account:profile' username=comment.commenter %}">{{ comment.commenter }}</a> - {{ comment.created_at }}</p>
                             </div>
                         </div>
                     {% endfor %}
@@ -109,7 +109,7 @@
                                 <hr />
                             </div>
                             <div class="user">
-                                <p>Answered by: {{ answer.answer.user }} - {{ answer.answer.created_at }}</p>
+                                <p>Answered by: <a class="bold" href="{% url 'account:profile' username=answer.answer.user %}">{{ answer.answer.user }}</a> - {{ answer.answer.created_at }}</p>
                             </div>
                             <div class="accept">
                                 {% if user == question.question.user %}
@@ -146,7 +146,7 @@
                                     </div>
                                     <div>
                                         <p>{{ comment.content }}</p><hr />
-                                        <p>Commented by: {{ comment.commenter }} - {{ comment.created_at }}</p>
+                                        <p>Commented by: <a class="bold" href="{% url 'account:profile' username=comment.commenter %}">{{ comment.commenter }}</a> - {{ comment.created_at }}</p>
                                     </div>
                                 </div>
                             {% endfor %}
