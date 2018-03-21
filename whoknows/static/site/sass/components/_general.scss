@@ -6,6 +6,7 @@ h1 {
 .tags {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
 
     &__tag {
         margin: 0.5rem;
@@ -148,5 +149,35 @@ ul {
         padding: 0.5rem;
         color: #fff;
         background-color: $color-blue;
+    }
+}
+
+.categories {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid $color-blue;
+
+    &__category {
+        background-color: #fff;
+        border-top: 1px solid $color-blue;
+        border-right: 1px solid $color-blue;
+        border-left: 1px solid $color-blue;
+        border-bottom: 1px solid #fff;
+        padding: 0.5rem;
+
+        &:not(last-child) {
+            margin-right: 0.5rem;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        &--active {
+            background-color: $color-blue;
+            border-bottom: 1px solid $color-blue;
+            color: #fff;
+        }
     }
 }

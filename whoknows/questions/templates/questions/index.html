@@ -12,6 +12,15 @@
             <div class="filter-results__result">{{ query_string }}</div>
         </div>
     {% endif %}
+    {% if not tagged_by and not query_string %}
+        <form action="{% url 'questions:home' %}" method="post" class="categories">
+            {% csrf_token %}
+            <input type="submit" class="categories__category  {% if not category or category == 'All questions'%}categories__category--active{% endif %}" value="All questions" name="category">
+            <input type="submit" class="categories__category {% if category == 'No answers'%}categories__category--active{% endif %}" value="No answers" name="category">
+            <input type="submit" class="categories__category {% if category == 'No accepted answers'%}categories__category--active{% endif %}" value="No accepted answers" name="category">
+            <input type="submit" class="categories__category {% if category == 'Accepted answers'%}categories__category--active{% endif %}" value="Accepted answers" name="category">
+        </form>
+    {% endif %}
     <div class="question-list">
         {% for question in object_list %}
             <div class="question-list__question">

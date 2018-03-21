@@ -79,6 +79,38 @@ class QuestionHomePageTest(TestCase, BaseTestMixins):
         self.assertContains(response, 'first question')
         self.assertContains(response, 'second question')
 
+    def test_category_all_questions(self):
+        response = self.client.post(reverse('questions:home'),
+                                    data={'category': 'All questions'},
+                                    follow=True)
+        self.assertContains(response, 'first question')
+        self.assertContains(response, 'second question')
+
+    def test_category_no_answers(self):
+        response = self.client.post(reverse('questions:home'),
+                                    data={'category': 'No answers'},
+                                    follow=True)
+        self.assertTrue('first question' not in response)
+        self.assertContains(response, 'second question')
+
+    def test_category_no_accepted_answers(self):
+        response = self.client.post(reverse('questions:home'),
+                                    data={'category': 'No accepted answers'},
+                                    follow=True)
+        self.assertContains(response, 'first question')
+        self.assertContains(response, 'second question')
+
+    def test_category_accepted_answers(self):
+        question = Question.objects.get(title='first question')
+        answer = question.answer_set.first()
+        answer.accepted = True
+        answer.save()
+        response = self.client.post(reverse('questions:home'),
+                                    data={'category': 'Accepted answers'},
+                                    follow=True)
+        self.assertContains(response, 'first question')
+        self.assertTrue('second question' not in response)
+
 
 class TagTest(TestCase, BaseTestMixins):
 
