@@ -14,9 +14,39 @@ from votes.forms import VoteForm
 class HomePage(ListView):
 
     model = Question
-    queryset = Question.objects.prefetch_related('votes', 'tags', 'answer_set').select_related('user').order_by('-created_at')[:30]
     template_name = 'questions/index.html'
     paginate_by = 5
+    ordering = '-created_at'
+
+    def post(self, request, *args, **kwargs):
+        self.paginate_by = None  # pagination is not used when filtering by category
+        category = self.request.POST.get('category', 'All questions')
+        if category == 'No answers':
+            self.object_list = Question.objects.prefetch_related('votes', 'tags', 'answer_set') \
+                                               .select_related('user') \
+                                               .annotate(answer_count=Count('answer')) \
+                                               .filter(answer_count=0) \
+                                               .order_by('-created_at')[:30]
+        elif category == 'No accepted answers':
+            accepted_answers = Answer.objects.filter(accepted=True)
+            self.object_list = Question.objects.prefetch_related('votes', 'tags', 'answer_set') \
+                                               .select_related('user') \
+                                               .exclude(answer__in=accepted_answers) \
+                                               .order_by('-created_at')[:30]
+        elif category == 'Accepted answers':
+            accepted_answers = Answer.objects.filter(accepted=True)
+            self.object_list = Question.objects.prefetch_related('votes', 'tags', 'answer_set') \
+                                               .select_related('user') \
+                                               .filter(answer__in=accepted_answers) \
+                                               .order_by('-created_at')[:30]
+        else:
+            self.paginate_by = 5
+            self.object_list = Question.objects.prefetch_related('votes', 'tags', 'answer_set') \
+                                               .select_related('user') \
+                                               .order_by('-created_at')[:30]
+
+        context = super().get_context_data(object_list=self.object_list, category=category, **kwargs)
+        return super().render_to_response(context=context, **kwargs)
 
 
 class QuestionCreate(LoginRequiredMixin, TemplateView):
@@ -118,7 +148,6 @@ class TaggedQuestionList(ListView):
 class QuestionSearch(ListView):
 
     template_name = 'questions/index.html'
-    paginate_by = 5
     form_class = SearchForm
 
     def post(self, request, *args, **kwargs):
