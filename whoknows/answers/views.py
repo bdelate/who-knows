@@ -23,10 +23,10 @@ class CreateAnswer(LoginRequiredMixin, CreateView):
         return JsonResponse({'response': 'Invalid Answer', 'type': 'answer'}, status=400)
 
     def get_form(self, form_class=None):
-        return self.form_class(self.request.POST, prefix='answer')
+        return self.form_class(self.request.POST)
 
     def handle_no_permission(self):
-        return JsonResponse({'response': 'login required', 'type': 'answer'}, status=400)
+        return JsonResponse({'response': 'Please login or signup before doing this.', 'type': 'answer'}, status=400)
 
 
 class ToggleAccept(LoginRequiredMixin, View):
@@ -50,4 +50,4 @@ class ToggleAccept(LoginRequiredMixin, View):
             return JsonResponse({'response': 'Invalid user', 'type': 'answer'}, status=400)
 
     def handle_no_permission(self):
-        return JsonResponse({'response': 'login required', 'type': 'answer'}, status=400)
+        return JsonResponse({'response': 'Please login or signup before doing this.', 'type': 'answer'}, status=400)

@@ -90,7 +90,7 @@ class QuestionDetail(DetailView):
         question.save()
 
         context = {'vote_form': VoteForm(),
-                   'answer_form': AnswerForm(initial={'question': question, 'user': self.request.user}, prefix='answer'),
+                   'answer_form': AnswerForm(initial={'question': question, 'user': self.request.user}),
                    'question': {'question': question, 'comments': []},
                    'answers': []}
 
