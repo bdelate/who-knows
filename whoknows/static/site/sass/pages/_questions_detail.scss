@@ -36,14 +36,12 @@
     border-bottom: 2px solid $color-grey;
 }
 
-.create_comment,
-.create_answer {
+.create-post {
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
 
-.display_comment_form,
-#id_display_answer_form {
+.display-form {
     font-size: 1.2rem;
 }
 
@@ -55,4 +53,11 @@
     padding-left: 2rem;
     font-size: 1.5rem;
     color: $color-red;
+}
+
+.new-post {
+    background-color: $color-orange;
+    border-radius: 0.6rem;
+    margin: 1rem;
+    padding: 0.5rem;
 }

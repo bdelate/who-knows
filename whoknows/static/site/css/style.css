@@ -74,7 +74,7 @@ h1 {
   display: none;
   z-index: 100; }
 
-#id_feedback {
+#feedback-content {
   top: 50%;
   left: 50%;
   position: fixed;
@@ -85,7 +85,7 @@ h1 {
   color: #000;
   font-size: 1.2rem;
   font-weight: bold; }
-  #id_feedback:hover {
+  #feedback-content:hover {
     cursor: pointer; }
 
 .horizontal-center {
@@ -201,13 +201,11 @@ ul {
   padding-top: 0.5rem;
   border-bottom: 2px solid #7d827f; }
 
-.create_comment,
-.create_answer {
+.create-post {
   padding-top: 1rem;
   padding-bottom: 1rem; }
 
-.display_comment_form,
-#id_display_answer_form {
+.display-form {
   font-size: 1.2rem; }
 
 .answer.accepted {
@@ -217,6 +215,12 @@ ul {
   padding-left: 2rem;
   font-size: 1.5rem;
   color: #873136; }
+
+.new-post {
+  background-color: #d7931e;
+  border-radius: 0.6rem;
+  margin: 1rem;
+  padding: 0.5rem; }
 
 .question-list__question {
   display: flex;

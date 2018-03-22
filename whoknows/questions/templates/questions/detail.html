@@ -8,17 +8,17 @@
         <div class="layout">
             <div class="layout__upper">
                 <div class="stat">
-                    <div id="question_vote_total_{{ question.question.id }}">{{ question.question.num_votes }}</div>
+                    <div class="vote-total">{{ question.question.num_votes }}</div>
                     <div>Votes</div>
                     {% if question.question.user != user %}
                         <form class="vote-form">
                             {% csrf_token %}
                             <input type="hidden" name="object_id" value="{{ question.question.id }}" readonly="readonly">
                             <input type="hidden" name="vote_type" value="question" readonly="readonly">
-                            <input type="hidden" name="form_url"
+                            <input type="hidden" name="form-url"
                             value="{% if question.question.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
                             <input type="hidden" name="operation" value="{% if question.question.voted %}-1{% else %}1{% endif %}" />
-                            <input type="submit" class="btn btn__{% if question.question.voted %}down{% else %}up{% endif %}"
+                            <input type="button" class="btn submit-vote btn__{% if question.question.voted %}down{% else %}up{% endif %}"
                             value="{% if question.question.voted %}remove vote{% else %}up vote{% endif %}" />
                         </form>
                     {% endif %}
@@ -44,17 +44,17 @@
                     {% for comment in question.comments %}
                         <div class="comments__comment">
                             <div class="stat">
-                                <div id="comment_vote_total_{{ comment.id }}">{{ comment.num_votes }}</div>
+                                <div class="vote-total">{{ comment.num_votes }}</div>
                                 <div>Votes</div>
                                 {% if comment.commenter != user %}
                                     <form class="vote-form">
                                         {% csrf_token %}
                                         <input type="hidden" name="object_id" value="{{ comment.id }}" readonly="readonly">
                                         <input type="hidden" name="vote_type" value="comment" readonly="readonly">
-                                        <input type="hidden" name="form_url"
+                                        <input type="hidden" name="form-url"
                                         value="{% if comment.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
                                         <input type="hidden" name="operation" value="{% if comment.voted %}-1{% else %}1{% endif %}" />
-                                        <input type="submit" name="submit" class="btn btn__{% if comment.voted %}down{% else %}up{% endif %}"
+                                        <input type="button" name="submit" class="btn submit-vote btn__{% if comment.voted %}down{% else %}up{% endif %}"
                                         value="{% if comment.voted %}remove vote{% else %}up vote{% endif %}" />
                                     </form>
                                 {% endif %}
@@ -66,14 +66,15 @@
                         </div>
                     {% endfor %}
                 </div>
-                <div class="create_comment">
-                    <a href="#" class="display_comment_form">Add a comment</a>
-                    <form class="comment_form" hidden>
+                <div class="create-post">
+                    <a href="#" class="display-form">Add a comment</a>
+                    <form class="form" hidden="hidden">
                         {% csrf_token %}
                         <input type="hidden" name="object_id" value="{{ question.question.id }}" readonly="readonly" />
                         <textarea name="content" cols="40" rows="10" required=""></textarea>
                         <input type="hidden" name="comment_type" value="question" readonly="readonly" />
-                        <br /><input type="submit" value="Post comment" class="btn" />
+                        <input type="hidden" name="form-url" value="{% url 'comments:create_comment' %}" readonly="readonly" />
+                        <br /><input type="button" value="Post comment" class="btn submit-post"/>
                     </form>
                 </div>
             </div>
@@ -88,17 +89,17 @@
                     <div id="accept-flag-{{ answer.answer.id }}" class="accept-flag" {% if not answer.answer.accepted %}hidden{% endif %}>&#10004; Accepted Answer</div>
                     <div class="layout__upper">
                         <div class="stat">
-                            <div id="answer_vote_total_{{ answer.answer.id }}">{{ answer.answer.num_votes }}</div>
+                            <div class="vote-total">{{ answer.answer.num_votes }}</div>
                             <div>Votes</div>
                             {% if answer.answer.user != user %}
                                 <form class="vote-form">
                                     {% csrf_token %}
                                     <input type="hidden" name="object_id" value="{{ answer.answer.id }}" readonly="readonly">
                                     <input type="hidden" name="vote_type" value="answer" readonly="readonly">
-                                    <input type="hidden" name="form_url"
+                                    <input type="hidden" name="form-url"
                                     value="{% if answer.answer.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
                                     <input type="hidden" name="operation" value="{% if answer.answer.voted %}-1{% else %}1{% endif %}" />
-                                    <input type="submit" name="submit" class="btn btn__{% if answer.answer.voted %}down{% else %}up{% endif %}"
+                                    <input type="button" name="submit" class="btn submit-vote btn__{% if answer.answer.voted %}down{% else %}up{% endif %}"
                                     value="{% if answer.answer.voted %}remove vote{% else %}up vote{% endif %}" />
                                 </form>
                             {% endif %}
@@ -116,8 +117,8 @@
                                     <form class="accept__form{% if answer.answer.accepted %}--accepted{% endif %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="answer_id" value="{{ answer.answer.id }}" readonly="readonly">
-                                        <input type="hidden" name="form_url" value="{% url 'answers:toggle_accept' %}" readonly="readonly">
-                                        <input type="submit" name="submit" class="btn btn__{% if answer.answer.accepted %}down{% else %}up{% endif %}"
+                                        <input type="hidden" name="form-url" value="{% url 'answers:toggle_accept' %}" readonly="readonly">
+                                        <input type="button" name="submit" class="btn submit-accept btn__{% if answer.answer.accepted %}down{% else %}up{% endif %}"
                                         value="{% if answer.answer.accepted %}Unaccept answer{% else %}Accept answer{% endif %}" />
                                     </form>
                                 {% endif %}
@@ -129,17 +130,17 @@
                             {% for comment in answer.comments %}
                                 <div class="comments__comment">
                                     <div class="stat">
-                                        <div id="comment_vote_total_{{ comment.id }}">{{ comment.num_votes }}</div>
+                                        <div class="vote-total">{{ comment.num_votes }}</div>
                                         <div>Votes</div>
                                         {% if comment.commenter != user %}
                                             <form class="vote-form">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="object_id" value="{{ comment.id }}" readonly="readonly">
                                                 <input type="hidden" name="vote_type" value="comment" readonly="readonly">
-                                                <input type="hidden" name="form_url"
+                                                <input type="hidden" name="form-url"
                                                 value="{% if comment.voted %}{% url 'votes:remove_vote' %}{% else %}{% url 'votes:up_vote' %}{% endif %}" />
                                                 <input type="hidden" name="operation" value="{% if comment.voted %}-1{% else %}1{% endif %}" />
-                                                <input type="submit" name="submit" class="btn btn__{% if comment.voted %}down{% else %}up{% endif %}"
+                                                <input type="button" name="submit" class="btn submit-vote btn__{% if comment.voted %}down{% else %}up{% endif %}"
                                                 value="{% if comment.voted %}remove vote{% else %}up vote{% endif %}" />
                                             </form>
                                         {% endif %}
@@ -151,14 +152,15 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <div class="create_comment">
-                            <a href="#" class="display_comment_form">Add a comment</a>
-                            <form class="comment_form" hidden>
+                        <div class="create-post">
+                            <a href="#" class="display-form">Add a comment</a>
+                            <form class="form" hidden>
                                 {% csrf_token %}
                                 <input type="hidden" name="object_id" value="{{ answer.answer.id }}" readonly="readonly" />
                                 <textarea name="content" cols="40" rows="10" required=""></textarea>
                                 <input type="hidden" name="comment_type" value="answer" readonly="readonly" />
-                                <br /><input type="submit" value="Post comment" class="btn" />
+                                <input type="hidden" name="form-url" value="{% url 'comments:create_comment' %}" readonly="readonly" />
+                                <br /><input type="button" value="Post comment" class="btn submit-post" />
                             </form>
                         </div>
                     </div>
@@ -168,22 +170,21 @@
             <div><br />This question has not been answered yet.</div>
         {% endfor %}
     </div>
-    <div class="create_answer">
-        <a href="#" id="id_display_answer_form">Answer this question</a>
-        <form id="id_answer_form" hidden>
+    <div class="create-post">
+        <a href="#" class="display-form">Answer this question</a>
+        <form class="form" hidden>
             {% csrf_token %}
             {{ answer_form.content }}
             {{ answer_form.user }}
             {{ answer_form.question }}
-            <input type="hidden" name="create_answer_url" value="{% url 'answers:create_answer' %}" readonly="readonly" />
-            <br /><input type="submit" value="Post answer" class="btn" />
+            <input type="hidden" name="form-url" value="{% url 'answers:create_answer' %}" readonly="readonly" />
+            <br /><input type="button" value="Post answer" class="btn submit-post" />
         </form>
     </div>
 {% endblock body %}
 {% block bottom_body %}
     <script>
-        var comment_url = "{% url 'comments:create_comment' %}",
-            user_authenticated = "{{ user.is_authenticated }}";
+        let userAuthenticated = "{{ user.is_authenticated }}";
     </script>
     <script src="{% static 'questions/js/ajax_handler.js' %}"></script>
 {%  endblock bottom_body %}
