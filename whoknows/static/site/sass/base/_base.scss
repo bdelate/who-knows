@@ -15,12 +15,21 @@ a {
     &:link,
     &:visited {
         text-decoration: none;
-        color: $color-blue;
+        color: $color-red-bright;
 
         &.bold {
-            font-weight: bold;    
+            font-weight: bold;
         }
     }
+}
+
+ul {
+    margin: 1rem;
+}
+
+h1 {
+    font-size: 1.3rem;
+    font-weight: bold;
 }
 
 hr {

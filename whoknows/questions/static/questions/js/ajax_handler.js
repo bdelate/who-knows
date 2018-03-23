@@ -71,34 +71,34 @@ class Handler {
         let formElement = element.parentElement,
             container = document.getElementById('answer-section-' + formElement.answer_id.value);
         // the currently accepted answer was clicked, therefore unaccept it
-        if (formElement.classList.contains('accept__form--accepted')) {
+        if (formElement.classList.contains('accept-form--accepted')) {
             document.getElementById('accept-flag-' + formElement.answer_id.value).style.display = 'none';
             container.classList.toggle('accepted');
-            formElement.classList.remove('accept__form--accepted');
-            formElement.classList.add('accept__form');
+            formElement.classList.remove('accept-form--accepted');
+            formElement.classList.add('accept-form');
             element.value = 'Accept answer';
-            element.classList.remove('btn__down');
-            element.classList.add('btn__up');
+            element.classList.remove('btn-down');
+            element.classList.add('btn-up');
         } else { // an unaccepted answer has been clicked
-            let acceptedAnswer = document.querySelector('.accept__form--accepted');
+            let acceptedAnswer = document.querySelector('.accept-form--accepted');
             // unnacept the currently accepted answer (if one exists)
             if (acceptedAnswer !== null) {
                 let acceptedAnswerContainer = document.getElementById('answer-section-' + acceptedAnswer.answer_id.value);
                 document.getElementById('accept-flag-' + acceptedAnswer.answer_id.value).style.display = 'none';
                 acceptedAnswerContainer.classList.remove('accepted');
-                acceptedAnswer.classList.remove('accept__form--accepted');
-                acceptedAnswer.classList.add('accept__form');
+                acceptedAnswer.classList.remove('accept-form--accepted');
+                acceptedAnswer.classList.add('accept-form');
                 acceptedAnswer.querySelector('input[name="submit"]').value = 'Accept answer';
-                acceptedAnswer.querySelector('input[name="submit"]').classList.remove('btn__down');
-                acceptedAnswer.querySelector('input[name="submit"]').classList.add('btn__up');
+                acceptedAnswer.querySelector('input[name="submit"]').classList.remove('btn-down');
+                acceptedAnswer.querySelector('input[name="submit"]').classList.add('btn-up');
             }
             // accept the clicked answer
             document.getElementById('accept-flag-' + formElement.answer_id.value).style.display = 'block';
             container.classList.toggle('accepted');
-            formElement.classList.remove('accept__form');
-            formElement.classList.add('accept__form--accepted');
+            formElement.classList.remove('accept-form');
+            formElement.classList.add('accept-form--accepted');
             element.value = 'Unaccept answer';
-            element.classList.add('btn__down');
+            element.classList.add('btn-down');
         }
     }
 }

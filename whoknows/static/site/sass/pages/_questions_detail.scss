@@ -1,9 +1,9 @@
-.layout__upper,
-.comments__comment {
+.layout-upper,
+.comment {
     display: flex;
 }
 
-.layout__lower {
+.layout-lower {
     margin-left: 3rem;
     margin-right: 3rem;
 }
@@ -12,7 +12,7 @@
 .answer {
     padding-top: 1rem;
     padding-bottom: 1rem;
-    background-color: #cccfd2;
+    background-color: $color-blue;
     border-radius: 0.6rem;
 }
 
@@ -20,10 +20,10 @@
     margin-top: 1.5rem;
 }
 
-.layout__upper {
+.layout-upper {
     margin: 1rem;
     padding-top: 0.5rem;
-    background-color: #9fa3a7;
+    background-color: $color-faded-blue;
     border-radius: 0.6rem;
 }
 
@@ -31,9 +31,10 @@
     padding: 1rem;
 }
 
-.comments__comment {
+.comment {
     padding-top: 0.5rem;
-    border-bottom: 2px solid $color-grey;
+    border-bottom: 2px solid $color-neon-blue;
+    color: $color-white;
 }
 
 .create-post {
@@ -46,13 +47,13 @@
 }
 
 .answer.accepted {
-    border: 3px solid $color-red;
+    border: 3px solid $color-red-bright;
 }
 
 .accept-flag {
     padding-left: 2rem;
     font-size: 1.5rem;
-    color: $color-red;
+    color: $color-red-bright;
 }
 
 .new-post {
