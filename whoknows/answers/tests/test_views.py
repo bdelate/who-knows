@@ -56,9 +56,9 @@ class AnswerTest(BaseTestMixins, TestCase):
         question = Question.objects.last()
         num_answers = Answer.objects.count()
         response = self.client.post(reverse('answers:create_answer'),
-                                    data={'answer-user': self.user.id,
-                                          'answer-content': 'test answer',
-                                          'answer-question': question.id})
+                                    data={'user': self.user.id,
+                                          'content': 'test answer',
+                                          'question': question.id})
         self.assertEqual(response.status_code, 200)
         response_message = response.json()['response']
         self.assertEqual(response_message, 'Answer created')
@@ -68,14 +68,14 @@ class AnswerTest(BaseTestMixins, TestCase):
         self.client.post(reverse('account:login'), self.credentials)
         question = Question.objects.first()
         self.client.post(reverse('answers:create_answer'),
-                         data={'answer-user': self.user.id,
-                               'answer-content': 'test answer',
-                               'answer-question': question.id})
+                         data={'user': self.user.id,
+                               'content': 'test answer',
+                               'question': question.id})
         self.assertEqual(Answer.objects.count(), 1)
         response = self.client.post(reverse('answers:create_answer'),
-                                    data={'answer-user': self.user.id,
-                                          'answer-content': 'test second answer',
-                                          'answer-question': question.id})
+                                    data={'user': self.user.id,
+                                          'content': 'test second answer',
+                                          'question': question.id})
         self.assertEqual(response.status_code, 400)
         response_message = response.json()['response']
         self.assertEqual(response_message, 'You have already answered this question')
