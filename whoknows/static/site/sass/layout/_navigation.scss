@@ -9,7 +9,37 @@
     & a {
         &:link,
         &:visited {
-            color: #fff;
+            color: $color-white;
+        }
+    }
+}
+
+.categories {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid $color-blue;
+
+    &-category {
+        background-color: $color-white;
+        border-top: 1px solid $color-blue;
+        border-right: 1px solid $color-blue;
+        border-left: 1px solid $color-blue;
+        border-bottom: 1px solid $color-white;
+        padding: 0.5rem;
+
+        &:not(last-child) {
+            margin-right: 0.5rem;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        &--active {
+            background-color: $color-blue;
+            border-bottom: 1px solid $color-blue;
+            color: $color-white;
         }
     }
 }

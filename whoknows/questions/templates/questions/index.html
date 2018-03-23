@@ -1,29 +1,29 @@
 {% extends parent_template|default:"base.html" %}
 {% block body %}
     {% if tagged_by %}
-        <div class="filter-results">
-            <div class="filter-results__heading">Questions tagged with: </div>
-            <div class="filter-results__result">{{ tagged_by }}</div>
+        <div class="filter">
+            <div class="filter-category">Questions tagged with: </div>
+            <div class="filter-query">{{ tagged_by }}</div>
         </div>
     {% endif %}
     {% if query_string %}
-        <div class="filter-results">
-            <div class="filter-results__heading">Questions (Title or Content) containing the phrase: </div>
-            <div class="filter-results__result">{{ query_string }}</div>
+        <div class="filter">
+            <div class="filter-category">Questions (Title or Content) containing the phrase: </div>
+            <div class="filter-query">{{ query_string }}</div>
         </div>
     {% endif %}
     {% if not tagged_by and not query_string %}
         <form action="{% url 'questions:home' %}" method="post" class="categories">
             {% csrf_token %}
-            <input type="submit" class="categories__category  {% if not category or category == 'All questions'%}categories__category--active{% endif %}" value="All questions" name="category">
-            <input type="submit" class="categories__category {% if category == 'No answers'%}categories__category--active{% endif %}" value="No answers" name="category">
-            <input type="submit" class="categories__category {% if category == 'No accepted answers'%}categories__category--active{% endif %}" value="No accepted answers" name="category">
-            <input type="submit" class="categories__category {% if category == 'Accepted answers'%}categories__category--active{% endif %}" value="Accepted answers" name="category">
+            <input type="submit" class="categories-category  {% if not category or category == 'All questions'%}categories-category--active{% endif %}" value="All questions" name="category">
+            <input type="submit" class="categories-category {% if category == 'No answers'%}categories-category--active{% endif %}" value="No answers" name="category">
+            <input type="submit" class="categories-category {% if category == 'No accepted answers'%}categories-category--active{% endif %}" value="No accepted answers" name="category">
+            <input type="submit" class="categories-category {% if category == 'Accepted answers'%}categories-category--active{% endif %}" value="Accepted answers" name="category">
         </form>
     {% endif %}
     <div class="question-list">
         {% for question in object_list %}
-            <div class="question-list__question">
+            <div class="question-list-question">
                 <div class="stat">
                     <div>{{ question.votes.count }}</div>
                     <div>Votes</div>
@@ -36,18 +36,18 @@
                     <div>{{ question.num_views }}</div>
                     <div>Views</div>
                 </div>
-                <div class="question-list__question--detail">
-                    <div class="question-list__question--title">
+                <div>
+                    <div>
                         <a href="{{ question.get_absolute_url }}">{{ question.title }}</a>
                     </div>
                     <div class="tags">
                         {% for tag in question.tags.all %}
-                            <div class="tags__tag">
+                            <div class="tags-tag">
                                 <a href="{% url 'questions:tagged_questions' slug=tag.slug %}">{{ tag.name }}</a>
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="question-list__question--user">
+                    <div>
                         Asked on: {{ question.created_at }} | Asked by: <a class="bold" href="{% url 'account:profile' username=question.user %}">{{ question.user }}</a>
                     </div>
                 </div>
@@ -61,21 +61,21 @@
     {% if is_paginated %}
         <div class="pagination">
             {% if page_obj.has_previous %}
-                <div class="pagination__link">
+                <div class="pagination-link">
                     <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
                 </div>
             {% endif %}
             {% for i in paginator.page_range %}
                 {% if page_obj.number == i %}
-                    <div class="pagination__link--current">{{ i }}</div>
+                    <div class="pagination-link--current">{{ i }}</div>
                 {% else %}
-                    <div class="pagination__link">
+                    <div class="pagination-link">
                         <a href="?page={{ i }}">{{ i }}</a>
                     </div>
                 {% endif %}
             {% endfor %}
             {% if page_obj.has_next %}
-                <div class="pagination__link">
+                <div class="pagination-link">
                     <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
                 </div>
             {% endif %}
