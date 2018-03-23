@@ -5,14 +5,17 @@
             <div class="filter-category">Questions tagged with: </div>
             <div class="filter-query">{{ tagged_by }}</div>
         </div>
-    {% endif %}
-    {% if query_string %}
+    {% elif query_string %}
         <div class="filter">
             <div class="filter-category">Questions (Title or Content) containing the phrase: </div>
             <div class="filter-query">{{ query_string }}</div>
         </div>
-    {% endif %}
-    {% if not tagged_by and not query_string %}
+    {% elif user_filter %}
+        <div class="filter">
+            <div class="filter-category">{{ user_filter }}</div>
+            <div class="filter-query">{{ user_filter_by }}</div>
+        </div>
+    {% else %}
         <form action="{% url 'questions:home' %}" method="post" class="categories">
             {% csrf_token %}
             <input type="submit" class="categories-category  {% if not category or category == 'All questions'%}categories-category--active{% endif %}" value="All questions" name="category">

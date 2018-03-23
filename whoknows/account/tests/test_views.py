@@ -37,3 +37,21 @@ class ProfileTest(BaseTestMixins, TestCase):
         response = self.client.post(reverse('account:login'), self.credentials, follow=True)
         self.assertContains(response, 'first question')
         self.assertContains(response, 'second question')
+
+
+class ListUserQuestionsAndAnswersTest(TestCase, BaseTestMixins):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.create_test_data()
+
+    def test_list_user_questions(self):
+        response = self.client.get(reverse('account:user_questions', args=['john']))
+        self.assertContains(response, 'first question')
+        self.assertContains(response, 'second question')
+
+    def test_list_user_answers(self):
+        response = self.client.get(reverse('account:user_answers', args=['john']))
+        self.assertContains(response, 'first question')
+        self.assertFalse('second question' in response)

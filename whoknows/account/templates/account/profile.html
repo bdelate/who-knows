@@ -45,7 +45,7 @@
                     {% endfor %}
                 </ul>
                 {% if latest_questions.count > 0 %}
-                    View all my questions <a class="bold" href="{% url 'account:user_questions' %}">here</a>
+                    View all my questions <a class="bold" href="{% url 'account:user_questions' username=profile_user %}">here</a>
                 {% endif %}
             </div>
         </div>
@@ -60,7 +60,7 @@
                     {% endfor %}
                 </ul>
                 {% if latest_questions.count > 0 %}
-                    View all the questions that I have answered <a class="bold" href="{% url 'account:user_answers' %}">here</a>
+                    View all the questions that I have answered <a class="bold" href="{% url 'account:user_answers' username=profile_user %}">here</a>
                 {% endif %}
             </div>
         </div>

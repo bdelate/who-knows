@@ -3,7 +3,6 @@ from django.views.generic import UpdateView, ListView, CreateView
 from django.contrib.auth import login, get_user, get_user_model
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile
 from votes.models import Vote
 from questions.models import Question
@@ -61,19 +60,25 @@ class Profile(UpdateView):
         return super().get_context_data(**kwargs)
 
 
-class UserQuestionList(LoginRequiredMixin, ListView):
+class UserQuestionList(ListView):
 
     template_name = 'questions/index.html'
     paginate_by = 5
 
     def get_queryset(self):
-        return Question.objects.filter(user=self.request.user).order_by('-created_at')
+        self.extra_context = {'user_filter': 'Questions asked by:',
+                              'user_filter_by': self.kwargs['username']}
+        user = get_object_or_404(get_user_model(), username=self.kwargs['username'])
+        return Question.objects.filter(user=user).order_by('-created_at')
 
 
-class UserAnswerList(LoginRequiredMixin, ListView):
+class UserAnswerList(ListView):
 
     template_name = 'questions/index.html'
     paginate_by = 5
 
     def get_queryset(self):
-        return Question.objects.prefetch_related('answer_set').filter(answer__user=self.request.user).order_by('-created_at')
+        self.extra_context = {'user_filter': 'Questions answered by:',
+                              'user_filter_by': self.kwargs['username']}
+        user = get_object_or_404(get_user_model(), username=self.kwargs['username'])
+        return Question.objects.prefetch_related('answer_set').filter(answer__user=user).order_by('-created_at')

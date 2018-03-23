@@ -49,7 +49,7 @@ class AnswerTest(BaseTestMixins, TestCase):
                                           'question': question.id})
         self.assertEqual(response.status_code, 400)
         response_message = response.json()['response']
-        self.assertIn('login required', response_message)
+        self.assertIn('Please login or signup before doing this.', response_message)
 
     def test_successful_answer(self):
         self.client.post(reverse('account:login'), self.credentials)
@@ -85,7 +85,7 @@ class AnswerTest(BaseTestMixins, TestCase):
         response = self.client.post(reverse('answers:toggle_accept'), data={'answer_id': 1})
         response_message = response.json()['response']
         self.assertEqual(response.status_code, 400)
-        self.assertIn('login required', response_message)
+        self.assertIn('Please login or signup before doing this.', response_message)
         answer = Answer.objects.first()
         self.assertEqual(answer.accepted, False)
 

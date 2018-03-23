@@ -154,14 +154,7 @@ class QuestionSearch(ListView):
         search_form = self.form_class(self.request.POST)
         if search_form.is_valid():
             query_string = search_form.cleaned_data['search']
-            self.object_list = Question.objects.filter(Q(title__icontains=query_string) |
-                                                       Q(content__icontains=query_string)).order_by('-created_at')
-            context = self.get_context_data(object_list=self.object_list, query_string=query_string, **kwargs)
-        else:
-            self.object_list = []
-            context = super().get_context_data(**kwargs)
-        return super().render_to_response(context=context, **kwargs)
-
-    def get_context_data(self, object_list, query_string, **kwargs):
-        kwargs['query_string'] = query_string
-        return super().get_context_data(object_list=self.object_list, **kwargs)
+            filter = Q(title__icontains=query_string) | Q(content__icontains=query_string)
+            self.queryset = Question.objects.filter(filter).order_by('-created_at')
+            self.extra_context = {'query_string': query_string}
+        return self.get(request, *args, **kwargs)
