@@ -18,21 +18,26 @@ class UpVote(View):
                 try:
                     object_instance = Question.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid question', 'type': 'vote'}, status=400)
+                    return JsonResponse({'response': 'Invalid question',
+                                         'type': 'vote'},
+                                        status=400)
                 else:
                     creator = object_instance.user
             elif vote_form.cleaned_data['vote_type'] == 'comment':
                 try:
                     object_instance = Comment.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid comment', 'type': 'vote'}, status=400)
+                    return JsonResponse({'response': 'Invalid comment',
+                                         'type': 'vote'},
+                                        status=400)
                 else:
                     creator = object_instance.commenter
             elif vote_form.cleaned_data['vote_type'] == 'answer':
                 try:
                     object_instance = Answer.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid answer', 'type': 'vote'}, status=400)
+                    return JsonResponse({'response': 'Invalid answer',
+                                         'type': 'vote'}, status=400)
                 else:
                     creator = object_instance.user
             if self.request.user.is_authenticated:
@@ -40,17 +45,28 @@ class UpVote(View):
                     try:
                         object_instance.votes.create(voter=self.request.user)
                     except IntegrityError:
-                        message = 'You have already voted for this {}'.format(vote_form.cleaned_data['vote_type'])
-                        return JsonResponse({'response': message, 'type': 'vote'}, status=400)
+                        message = 'You have already voted for this {}'.format(
+                            vote_form.cleaned_data['vote_type'])
+                        return JsonResponse({'response': message,
+                                             'type': 'vote'},
+                                            status=400)
                     else:
-                        return JsonResponse({'response': 'Thanks for your vote', 'type': 'vote'})
+                        return JsonResponse(
+                            {'response': 'Thanks for your vote',
+                             'type': 'vote'})
                 else:
-                    message = 'You cannot vote for your own {}'.format(vote_form.cleaned_data['vote_type'])
-                    return JsonResponse({'response': message, 'type': 'vote'}, status=400)
+                    message = 'You cannot vote for your own {}'.format(
+                        vote_form.cleaned_data['vote_type'])
+                    return JsonResponse({'response': message,
+                                         'type': 'vote'},
+                                        status=400)
             else:
-                return JsonResponse({'response': 'login required', 'type': 'vote'})
+                return JsonResponse(
+                    {'response': 'Please login or signup before doing this.',
+                     'type': 'vote'})
         else:
-            return JsonResponse({'response': 'Invalid Vote', 'type': 'vote'}, status=400)
+            return JsonResponse({'response': 'Invalid Vote', 'type': 'vote'},
+                                status=400)
 
 
 class RemoveVote(View):
@@ -63,23 +79,34 @@ class RemoveVote(View):
                 try:
                     object_instance = Question.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid question', 'type': 'vote'}, status=400)
+                    return JsonResponse({'response': 'Invalid question',
+                                         'type': 'vote'},
+                                        status=400)
             elif vote_form.cleaned_data['vote_type'] == 'comment':
                 try:
                     object_instance = Comment.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid comment', 'type': 'vote'}, status=400)
+                    return JsonResponse({'response': 'Invalid comment',
+                                         'type': 'vote'},
+                                        status=400)
             elif vote_form.cleaned_data['vote_type'] == 'answer':
                 try:
                     object_instance = Answer.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid answer', 'type': 'vote'}, status=400)
+                    return JsonResponse({'response': 'Invalid answer',
+                                         'type': 'vote'},
+                                        status=400)
             try:
                 vote = object_instance.votes.get(voter=request.user)
             except ObjectDoesNotExist:
-                return JsonResponse({'response': 'Invalid Vote', 'type': 'vote'}, status=400)
+                return JsonResponse({'response': 'Invalid Vote',
+                                     'type': 'vote'},
+                                    status=400)
             else:
                 vote.delete()
-                return JsonResponse({'response': 'Your vote has been removed', 'type': 'vote'})
+                return JsonResponse({'response': 'Your vote has been removed',
+                                     'type': 'vote'})
         else:
-            return JsonResponse({'response': 'Invalid Vote', 'type': 'vote'}, status=400)
+            return JsonResponse({'response': 'Invalid Vote',
+                                 'type': 'vote'},
+                                status=400)

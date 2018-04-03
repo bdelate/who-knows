@@ -4,9 +4,10 @@ from django.core.exceptions import ValidationError
 
 class VoteForm(forms.Form):
 
-    object_id = forms.IntegerField(widget=forms.HiddenInput(attrs={'readonly': 'readonly'}),
+    hidden_input = forms.HiddenInput(attrs={'readonly': 'readonly'})
+    object_id = forms.IntegerField(widget=hidden_input,
                                    min_value=1)
-    vote_type = forms.CharField(widget=forms.HiddenInput(attrs={'readonly': 'readonly'}),
+    vote_type = forms.CharField(widget=hidden_input,
                                 max_length=8)
 
     def clean_vote_type(self):

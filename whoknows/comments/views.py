@@ -16,17 +16,27 @@ class CreateComment(View):
                 try:
                     object_instance = Question.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid Question', 'type': 'comment'}, status=400)
+                    return JsonResponse({'response': 'Invalid Question',
+                                         'type': 'comment'},
+                                        status=400)
             if comment_form.cleaned_data['comment_type'] == 'answer':
                 try:
                     object_instance = Answer.objects.get(id=object_id)
                 except ObjectDoesNotExist:
-                    return JsonResponse({'response': 'Invalid Answer', 'type': 'answer'}, status=400)
+                    return JsonResponse({'response': 'Invalid Answer',
+                                         'type': 'answer'},
+                                        status=400)
             if self.request.user.is_authenticated:
+                content = comment_form.cleaned_data['content']
                 object_instance.comments.create(commenter=self.request.user,
-                                                content=comment_form.cleaned_data['content'])
-                return JsonResponse({'response': 'Comment created', 'type': 'comment'})
+                                                content=content)
+                return JsonResponse({'response': 'Comment created',
+                                     'type': 'comment'})
             else:
-                return JsonResponse({'response': 'login required', 'type': 'comment'})
+                return JsonResponse(
+                    {'response': 'Please login or signup before doing this.',
+                     'type': 'comment'})
         else:
-            return JsonResponse({'response': 'Invalid Comment', 'type': 'comment'}, status=400)
+            return JsonResponse({'response': 'Invalid Comment',
+                                 'type': 'comment'},
+                                status=400)

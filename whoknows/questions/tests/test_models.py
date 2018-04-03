@@ -12,7 +12,9 @@ class QuestionTest(TransactionTestCase):
         self.user = User.objects.create(username='john')
 
     def test_save_and_retrieve(self):
-        Question.objects.create(user=self.user, title='test title', content='test content')
+        Question.objects.create(user=self.user,
+                                title='test title',
+                                content='test content')
         question = Question.objects.first()
         self.assertEqual(question.user, self.user)
         self.assertEqual(question.title, 'test title')
@@ -31,12 +33,15 @@ class QuestionTest(TransactionTestCase):
             invalid_question.full_clean()
 
     def test_cannot_create_duplicate_titles(self):
-        Question.objects.create(user=self.user, title='test title', content='test content')
+        Question.objects.create(user=self.user, title='test title',
+                                content='test content')
         with self.assertRaises(IntegrityError):
-            Question.objects.create(user=self.user, title='test title', content='test content')
+            Question.objects.create(user=self.user, title='test title',
+                                    content='test content')
 
     def test_get_absolute_url(self):
-        Question.objects.create(user=self.user, title='test title', content='test content')
+        Question.objects.create(user=self.user, title='test title',
+                                content='test content')
         question = Question.objects.first()
         self.assertEqual(question.get_absolute_url(), '/question/test-title/')
 
