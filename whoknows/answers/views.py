@@ -18,25 +18,20 @@ class CreateAnswer(LoginRequiredMixin, CreateView):
                                           user=self.request.user)
                                   .exists())
         if already_answered:
-            return JsonResponse(
-                {'response': 'You have already answered this question',
-                 'type': 'answer'},
-                status=400)
+            response = 'You have already answered this question'
+            return JsonResponse({'response': response}, status=400)
         form.save()
-        return JsonResponse({'response': 'Answer created', 'type': 'answer'})
+        return JsonResponse({'response': 'Answer created'})
 
     def form_invalid(self, form):
-        return JsonResponse({'response': 'Invalid Answer', 'type': 'answer'},
-                            status=400)
+        return JsonResponse({'response': 'Invalid Answer'}, status=400)
 
     def get_form(self, form_class=None):
         return self.form_class(self.request.POST)
 
     def handle_no_permission(self):
-        return JsonResponse(
-            {'response': 'Please login or signup before doing this.',
-             'type': 'answer'},
-            status=400)
+        response = 'Please login or signup before doing this.'
+        return JsonResponse({'response': response}, status=400)
 
 
 class ToggleAccept(LoginRequiredMixin, View):
@@ -61,11 +56,8 @@ class ToggleAccept(LoginRequiredMixin, View):
                 answer.accepted = not answer.accepted
                 answer.save()
                 return JsonResponse({'response': 'Accepted answer toggled'})
-            return JsonResponse({'response': 'Invalid user', 'type': 'answer'},
-                                status=400)
+            return JsonResponse({'response': 'Invalid user'}, status=400)
 
     def handle_no_permission(self):
-        return JsonResponse(
-            {'response': 'Please login or signup before doing this.',
-             'type': 'answer'},
-            status=400)
+        response = 'Please login or signup before doing this.'
+        return JsonResponse({'response': response}, status=400)
