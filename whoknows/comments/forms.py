@@ -4,10 +4,11 @@ from django.core.exceptions import ValidationError
 
 class CommentForm(forms.Form):
 
-    object_id = forms.IntegerField(widget=forms.HiddenInput(attrs={'readonly': 'readonly'}),
+    hidden_widget = forms.HiddenInput(attrs={'readonly': 'readonly'})
+    object_id = forms.IntegerField(widget=hidden_widget,
                                    min_value=1)
     content = forms.CharField(widget=forms.Textarea)
-    comment_type = forms.CharField(widget=forms.HiddenInput(attrs={'readonly': 'readonly'}),
+    comment_type = forms.CharField(widget=hidden_widget,
                                    max_length=8)
 
     def clean_comment_type(self):

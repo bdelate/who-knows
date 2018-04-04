@@ -19,33 +19,47 @@ class HomePage(ListView):
     ordering = '-created_at'
 
     def post(self, request, *args, **kwargs):
-        self.paginate_by = None  # pagination is not used when filtering by category
+        # pagination is not used when filtering by category
+        self.paginate_by = None
         category = self.request.POST.get('category', 'All questions')
         if category == 'No answers':
-            self.object_list = Question.objects.prefetch_related('votes', 'tags', 'answer_set') \
-                                               .select_related('user') \
-                                               .annotate(answer_count=Count('answer')) \
-                                               .filter(answer_count=0) \
-                                               .order_by('-created_at')[:30]
+            self.object_list = (Question.objects
+                                        .prefetch_related('votes',
+                                                          'tags',
+                                                          'answer_set')
+                                        .select_related('user')
+                                        .annotate(answer_count=Count('answer'))
+                                        .filter(answer_count=0)
+                                        .order_by('-created_at')[:30])
         elif category == 'No accepted answers':
             accepted_answers = Answer.objects.filter(accepted=True)
-            self.object_list = Question.objects.prefetch_related('votes', 'tags', 'answer_set') \
-                                               .select_related('user') \
-                                               .exclude(answer__in=accepted_answers) \
-                                               .order_by('-created_at')[:30]
+            self.object_list = (Question.objects
+                                        .prefetch_related('votes',
+                                                          'tags',
+                                                          'answer_set')
+                                        .select_related('user')
+                                        .exclude(answer__in=accepted_answers)
+                                        .order_by('-created_at')[:30])
         elif category == 'Accepted answers':
             accepted_answers = Answer.objects.filter(accepted=True)
-            self.object_list = Question.objects.prefetch_related('votes', 'tags', 'answer_set') \
-                                               .select_related('user') \
-                                               .filter(answer__in=accepted_answers) \
-                                               .order_by('-created_at')[:30]
+            self.object_list = (Question.objects
+                                        .prefetch_related('votes',
+                                                          'tags',
+                                                          'answer_set')
+                                        .select_related('user')
+                                        .filter(answer__in=accepted_answers)
+                                        .order_by('-created_at')[:30])
         else:
             self.paginate_by = 5
-            self.object_list = Question.objects.prefetch_related('votes', 'tags', 'answer_set') \
-                                               .select_related('user') \
-                                               .order_by('-created_at')[:30]
+            self.object_list = (Question.objects
+                                        .prefetch_related('votes', 'tags',
+                                                          'answer_set')
+                                        .select_related('user')
+                                        .order_by('-created_at')[:30])
 
-        context = super().get_context_data(object_list=self.object_list, category=category, **kwargs)
+        context = super().get_context_data(object_list=self.object_list,
+                                           category=category,
+                                           **kwargs)
         return super().render_to_response(context=context, **kwargs)
 
 
@@ -80,42 +94,56 @@ class QuestionDetail(DetailView):
     template_name = 'questions/detail.html'
 
     def get(self, request, *args, **kwargs):
-        # anonymous users cannot be used in fitler clause, therefore assign None
+        # anonymous users cannot be used in fitler clause,
+        # therefore assign None
         user = self.request.user if self.request.user.is_authenticated else None
-        voted_for_question = Question.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
-        question_query = Question.objects.select_related('user').annotate(num_votes=Count('votes'),
-                                                                          voted=Exists(voted_for_question))
+        voted_for_question = (Question.objects
+                                      .filter(votes__voter=user,
+                                              votes__object_id=OuterRef('pk')))
+        question_query = (Question.objects
+                                  .select_related('user')
+                                  .annotate(num_votes=Count('votes'),
+                                            voted=Exists(voted_for_question)))
         question = get_object_or_404(question_query, slug=kwargs['slug'])
         question.num_views += 1
         question.save()
 
+        answer_form_initial = {'question': question, 'user': self.request.user}
         context = {'vote_form': VoteForm(),
-                   'answer_form': AnswerForm(initial={'question': question, 'user': self.request.user}),
+                   'answer_form': AnswerForm(initial=answer_form_initial),
                    'question': {'question': question, 'comments': []},
                    'answers': []}
 
         # get the comments for the question
-        voted_for_comment = Comment.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
-        comment_query = question.comments.prefetch_related('commenter') \
-                                         .annotate(num_votes=Count('votes'),
-                                                   voted=Exists(voted_for_comment)) \
-                                         .order_by('created_at')
+        voted_for_comment = (Comment.objects
+                                    .filter(votes__voter=user,
+                                            votes__object_id=OuterRef('pk')))
+        comment_query = (question.comments
+                                 .prefetch_related('commenter')
+                                 .annotate(num_votes=Count('votes'),
+                                           voted=Exists(voted_for_comment))
+                                 .order_by('created_at'))
         for comment in comment_query:
             context['question']['comments'].append(comment)
 
         # get the answers for the question
-        voted_for_answer = Answer.objects.filter(votes__voter=user, votes__object_id=OuterRef('pk'))
-        answers = Answer.objects.prefetch_related('user').filter(question=question) \
-                                                         .annotate(num_votes=Count('votes'),
-                                                                   voted=Exists(voted_for_answer)) \
-                                                         .order_by('-accepted', '-num_votes', '-created_at')
+        voted_for_answer = (Answer.objects
+                                  .filter(votes__voter=user,
+                                          votes__object_id=OuterRef('pk')))
+        answers = (Answer.objects
+                         .prefetch_related('user')
+                         .filter(question=question)
+                         .annotate(num_votes=Count('votes'),
+                                   voted=Exists(voted_for_answer))
+                         .order_by('-accepted', '-num_votes', '-created_at'))
         for answer in answers:
             comments = []
             # get the comments for each answer
-            comment_query = answer.comments.prefetch_related('commenter') \
-                                           .annotate(num_votes=Count('votes'),
-                                                     voted=Exists(voted_for_comment)) \
-                                           .order_by('created_at')
+            comment_query = (answer.comments
+                                   .prefetch_related('commenter')
+                                   .annotate(num_votes=Count('votes'),
+                                             voted=Exists(voted_for_comment))
+                                   .order_by('created_at'))
             for comment in comment_query:
                 comments.append(comment)
             # append this answer along with all its comments to context
@@ -154,7 +182,10 @@ class QuestionSearch(ListView):
         search_form = self.form_class(self.request.POST)
         if search_form.is_valid():
             query_string = search_form.cleaned_data['search']
-            filter = Q(title__icontains=query_string) | Q(content__icontains=query_string)
-            self.queryset = Question.objects.filter(filter).order_by('-created_at')
+            filter = (Q(title__icontains=query_string)
+                      | Q(content__icontains=query_string))
+            self.queryset = (Question.objects
+                                     .filter(filter)
+                                     .order_by('-created_at'))
             self.extra_context = {'query_string': query_string}
         return self.get(request, *args, **kwargs)

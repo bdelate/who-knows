@@ -27,34 +27,48 @@ class QuestionCreateAndDetailTest(TestCase, BaseTestMixins):
         self.client.post(reverse('account:login'), self.credentials)
         tag = Tag.objects.first()
         response = self.client.post(reverse('questions:create'),
-                                    data={'title': 'test title', 'content': 'test content', 'tags': tag.slug},
+                                    data={'title': 'test title',
+                                          'content': 'test content',
+                                          'tags': tag.slug},
                                     follow=True)
-        self.assertRedirects(response, reverse('questions:detail', args=['test-title']), status_code=302)
+        self.assertRedirects(response,
+                             reverse('questions:detail',
+                                     args=['test-title']),
+                             status_code=302)
         self.assertTemplateUsed(response, 'questions/detail.html')
 
     def test_logged_out_user_can_access_question_detail(self):
         user = auth.get_user(self.client)
         self.assertEqual(user.is_authenticated, False)
-        response = self.client.get(reverse('questions:detail', args=['first-question']))
+        response = self.client.get(reverse('questions:detail',
+                                           args=['first-question']))
         self.assertEqual(response.status_code, 200)
 
     def test_invalid_question_detail_displays_404(self):
-        response = self.client.get(reverse('questions:detail', args=['this-question-does-not-exist']))
+        response = (self.client
+                        .get(reverse('questions:detail',
+                                     args=['this-question-does-not-exist'])))
         self.assertEqual(response.status_code, 404)
 
     def test_cannot_create_duplicate_title(self):
         self.client.post(reverse('account:login'), self.credentials)
         tag = Tag.objects.first()
         response = self.client.post(reverse('questions:create'),
-                                    data={'title': 'first question', 'content': 'test content', 'tags': tag.slug},
+                                    data={'title': 'first question',
+                                          'content': 'test content',
+                                          'tags': tag.slug},
                                     follow=True)
-        self.assertContains(response, 'Question with this Title already exists.')
+        self.assertContains(response,
+                            'Question with this Title already exists.')
 
     def test_create_question_with_multiple_tags(self):
         self.client.post(reverse('account:login'), self.credentials)
         tags = Tag.objects.all()
+        slug_list = [tags[0].slug, tags[1].slug]
         response = self.client.post(reverse('questions:create'),
-                                    data={'title': 'test title', 'content': 'test content', 'tags': [tags[0].slug, tags[1].slug]},
+                                    data={'title': 'test title',
+                                          'content': 'test content',
+                                          'tags': slug_list},
                                     follow=True)
         self.assertContains(response, 'tag1')
         self.assertContains(response, 'tag2')
@@ -62,7 +76,8 @@ class QuestionCreateAndDetailTest(TestCase, BaseTestMixins):
     def test_question_must_have_a_tag(self):
         self.client.post(reverse('account:login'), self.credentials)
         response = self.client.post(reverse('questions:create'),
-                                    data={'title': 'test title', 'content': 'test content'},
+                                    data={'title': 'test title',
+                                          'content': 'test content'},
                                     follow=True)
         self.assertContains(response, 'This field is required')
 
@@ -125,12 +140,14 @@ class TagTest(TestCase, BaseTestMixins):
         self.assertContains(response, 'tag2')
 
     def test_list_questions_for_specific_tag(self):
-        response = self.client.get(reverse('questions:tagged_questions', args=['tag2']))
+        response = self.client.get(reverse('questions:tagged_questions',
+                                           args=['tag2']))
         self.assertNotContains(response, 'first question')
         self.assertContains(response, 'second question')
 
     def test_invalid_tag_displays_404(self):
-        response = self.client.get(reverse('questions:tagged_questions', args=['invalid tag']))
+        response = self.client.get(reverse('questions:tagged_questions',
+                                           args=['invalid tag']))
         self.assertEqual(response.status_code, 404)
 
 
@@ -142,12 +159,18 @@ class QuestionHomeSearchTest(TestCase, BaseTestMixins):
         User = get_user_model()
         credentials = {'username': 'john', 'password': 'p@ssw0rd'}
         user = User.objects.create_user(**credentials)
-        Question.objects.create(user=user, title='unique title (find this)', content='content for first question')
-        Question.objects.create(user=user, title='this is the title', content='content for second question (find this)')
+        Question.objects.create(user=user,
+                                title='unique title (find this)',
+                                content='content for first question')
+        (Question.objects
+                 .create(user=user,
+                         title='this is the title',
+                         content='content for second question (find this)'))
 
     def test_search_title_and_content(self):
         """
-        Ensure results are based on searching both the question title and content
+        Ensure results are based on searching
+        both the question title and content
         """
         response = self.client.post(reverse('questions:search'),
                                     {'search': 'find this'})
@@ -156,8 +179,9 @@ class QuestionHomeSearchTest(TestCase, BaseTestMixins):
         self.assertEqual(results.count(), 2)
 
     def test_no_results(self):
-        response = self.client.post(reverse('questions:search'),
-                                    {'search': 'this will not return any results'})
+        response = (self.client
+                        .post(reverse('questions:search'),
+                              {'search': 'this will not return any results'}))
         self.assertEqual(response.status_code, 200)
         results = response.context['question_list']
         self.assertEqual(results.count(), 0)

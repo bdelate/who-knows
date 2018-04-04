@@ -18,7 +18,9 @@ class AnswerTest(BaseTestMixins, TestCase):
 
     def test_valid_form(self):
         question = Question.objects.first()
-        form = AnswerForm(data={'user': self.user.id, 'content': 'test answer', 'question': question.id})
+        form = AnswerForm(data={'user': self.user.id,
+                                'content': 'test answer',
+                                'question': question.id})
         self.assertTrue(form.is_valid())
 
     def test_all_fields_required(self):

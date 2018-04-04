@@ -30,8 +30,10 @@ class Profile(UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         """
-        If the user is trying to access 'account:profile' directly, the kwargs['username'] will not be present.
-        If that user is not logged in, redirect to 'account:login'. If the user is logged in, call super()
+        If the user is trying to access 'account:profile' directly,
+        the kwargs['username'] will not be present.
+        If that user is not logged in, redirect to 'account:login',
+        else call super()
         """
         try:
             self.kwargs['username']
@@ -46,17 +48,30 @@ class Profile(UpdateView):
         except KeyError:
             profile_user = get_user(self.request)
         else:
-            profile_user = get_object_or_404(get_user_model(), username=profile_user)
+            profile_user = get_object_or_404(get_user_model(),
+                                             username=profile_user)
         self.kwargs['profile_user'] = profile_user
         return profile_user.profile
 
     def get_context_data(self, **kwargs):
-        kwargs['question_votes_received'] = Vote.objects.filter(questions__user=self.kwargs['profile_user']).count()
-        kwargs['comment_votes_received'] = Vote.objects.filter(comments__commenter=self.kwargs['profile_user']).count()
-        kwargs['answer_votes_received'] = Vote.objects.filter(answers__user=self.kwargs['profile_user']).count()
-        kwargs['latest_questions'] = Question.objects.filter(user=self.kwargs['profile_user']).order_by('-created_at')[:5]
-        kwargs['latest_answers'] = Answer.objects.prefetch_related('question').filter(user=self.kwargs['profile_user']).order_by('-created_at')[:5]
-        kwargs['profile_user'] = self.kwargs['profile_user']
+        user = self.kwargs['profile_user']
+        kwargs['question_votes_received'] = (Vote.objects
+                                                 .filter(questions__user=user)
+                                                 .count())
+        kwargs['comment_votes_received'] = (Vote.objects
+                                                .filter(comments__commenter=user)
+                                                .count())
+        kwargs['answer_votes_received'] = (Vote.objects
+                                               .filter(answers__user=user)
+                                               .count())
+        kwargs['latest_questions'] = (Question.objects
+                                              .filter(user=user)
+                                              .order_by('-created_at')[:5])
+        kwargs['latest_answers'] = (Answer.objects
+                                          .prefetch_related('question')
+                                          .filter(user=user)
+                                          .order_by('-created_at')[:5])
+        kwargs['profile_user'] = user
         return super().get_context_data(**kwargs)
 
 
@@ -68,8 +83,11 @@ class UserQuestionList(ListView):
     def get_queryset(self):
         self.extra_context = {'user_filter': 'Questions asked by:',
                               'user_filter_by': self.kwargs['username']}
-        user = get_object_or_404(get_user_model(), username=self.kwargs['username'])
-        return Question.objects.filter(user=user).order_by('-created_at')
+        user = get_object_or_404(get_user_model(),
+                                 username=self.kwargs['username'])
+        return (Question.objects
+                        .filter(user=user)
+                        .order_by('-created_at'))
 
 
 class UserAnswerList(ListView):
@@ -80,5 +98,9 @@ class UserAnswerList(ListView):
     def get_queryset(self):
         self.extra_context = {'user_filter': 'Questions answered by:',
                               'user_filter_by': self.kwargs['username']}
-        user = get_object_or_404(get_user_model(), username=self.kwargs['username'])
-        return Question.objects.prefetch_related('answer_set').filter(answer__user=user).order_by('-created_at')
+        user = get_object_or_404(get_user_model(),
+                                 username=self.kwargs['username'])
+        return (Question.objects
+                        .prefetch_related('answer_set')
+                        .filter(answer__user=user)
+                        .order_by('-created_at'))

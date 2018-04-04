@@ -21,7 +21,8 @@ class Tag(models.Model):
 
 
 class Question(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     title = models.CharField(max_length=256, unique=True)
     slug = models.SlugField(max_length=256)
     content = models.TextField()

@@ -39,13 +39,15 @@ class VoteTest(BaseTestMixins, TestCase):
 
     def test_save_and_retrieve_comment_vote(self):
         """
-        Test that votes can be created both for question comments and answer comments
+        Test that votes can be created both for question comments
+        and answer comments
         """
         objects = [Question.objects.first(),
                    Answer.objects.first()]
         for obj in objects:
             num_votes = Vote.objects.count()
-            comment = obj.comments.create(commenter=self.user, content='test comment')
+            comment = obj.comments.create(commenter=self.user,
+                                          content='test comment')
             comment.votes.create(voter=self.user)
             self.assertEqual(Vote.objects.count(), num_votes + 1)
             vote = Vote.objects.last()
