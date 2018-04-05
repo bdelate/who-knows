@@ -11,8 +11,7 @@ class CommentTest(BaseTestMixins, TestCase):
     credentials = {'username': 'john', 'password': 'p@ssw0rd'}
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
         cls.create_test_data()
 
     def test_invalid_form_returns_error(self):

@@ -9,8 +9,7 @@ class ProfileTest(BaseTestMixins, TestCase):
     credentials = {'username': 'john', 'password': 'p@ssw0rd'}
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
         cls.create_test_data()
 
     def test_unauth_profile_redirects_to_login(self):
@@ -50,8 +49,7 @@ class ProfileTest(BaseTestMixins, TestCase):
 class ListUserQuestionsAndAnswersTest(TestCase, BaseTestMixins):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
         cls.create_test_data()
 
     def test_list_user_questions(self):

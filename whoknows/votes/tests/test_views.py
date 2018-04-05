@@ -34,8 +34,7 @@ class UpVoteTest(BaseTestMixins, GenericVoteTests, TestCase):
     second_user_credentials = {'username': 'sally', 'password': 'p@ssw0rd'}
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
         cls.create_test_data()
         cls.create_second_user()
 
@@ -135,8 +134,7 @@ class RemoveVoteTest(BaseTestMixins, GenericVoteTests, TestCase):
     second_user_credentials = {'username': 'sally', 'password': 'p@ssw0rd'}
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
         cls.create_test_data()
         cls.create_second_user()
 

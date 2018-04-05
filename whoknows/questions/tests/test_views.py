@@ -11,8 +11,7 @@ class QuestionCreateAndDetailTest(TestCase, BaseTestMixins):
     credentials = {'username': 'john', 'password': 'p@ssw0rd'}
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
         cls.create_test_data()
 
     def test_logged_out_user_cannot_ask_question(self):
@@ -85,8 +84,8 @@ class QuestionCreateAndDetailTest(TestCase, BaseTestMixins):
 class QuestionHomePageTest(TestCase, BaseTestMixins):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
+
         cls.create_test_data()
 
     def test_question_list(self):
@@ -130,8 +129,8 @@ class QuestionHomePageTest(TestCase, BaseTestMixins):
 class TagTest(TestCase, BaseTestMixins):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
+
         cls.create_test_data()
 
     def test_list_tags(self):
@@ -154,8 +153,8 @@ class TagTest(TestCase, BaseTestMixins):
 class QuestionHomeSearchTest(TestCase, BaseTestMixins):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
+
         User = get_user_model()
         credentials = {'username': 'john', 'password': 'p@ssw0rd'}
         user = User.objects.create_user(**credentials)

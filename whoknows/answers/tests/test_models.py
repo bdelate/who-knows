@@ -8,8 +8,7 @@ from django.contrib.auth import get_user_model
 class AnswerTest(BaseTestMixins, TestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+    def setUpTestData(cls):
         cls.create_test_data()
 
     def setUp(self):
