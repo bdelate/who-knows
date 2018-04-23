@@ -1,5 +1,6 @@
 /**/__pycache__/
 whoknows/whoknows/settings/dev.py
+whoknows/whoknows/settings/live.py
 node_modules/
 whoknows/static/site/css/style.comp.css
 whoknows/static/site/css/style.prefix.css
