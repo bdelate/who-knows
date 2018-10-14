@@ -1,0 +1,20 @@
+version: '3.6'
+
+services:
+  db:
+    image: postgres:9.5.14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  web:
+    build: .
+    image: whoknows
+    command: python ./whoknows/manage.py runserver 0.0.0.0:8000 --settings=whoknows.settings.dev
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
