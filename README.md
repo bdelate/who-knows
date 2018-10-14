@@ -15,3 +15,13 @@ Functionality:
 * Filtering for questions with no answers, accepted answers etc.
 * Text based searching.
 * User profiles including statistics based on votes received for questions, answers and comments.
+
+### Dev setup
+The docker image uses Python as its base and then manually installs node and npm for use with the Sass files.
+
+```
+docker-compose build
+docker-compose run web python ./whoknows/manage.py migrate --settings=whoknows.settings.dev
+docker-compose run web python ./whoknows/manage.py createsuperuser --settings=whoknows.settings.dev
+docker-compose up
+```
